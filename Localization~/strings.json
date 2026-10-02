@@ -1,0 +1,1896 @@
+[
+ {
+  "key": "analysis.001",
+  "en": "{0}  (toggle)",
+  "ko": "{0}  (토글)",
+  "ja": "{0}  (トグル)",
+  "zh": "{0}  (开关)",
+  "contexts": [
+   "VrcAvatarAnalysis.cs:41: return gestures.Count > 0 ? $\"{SafeName}  ({string.Join(\" · \", gestures)})\" : $\"{SafeName}  (토글)\";"
+  ]
+ },
+ {
+  "key": "analysis.002",
+  "en": "None",
+  "ko": "없음",
+  "ja": "なし",
+  "zh": "无",
+  "contexts": [
+   "VrcAvatarAnalysis.cs:61: public string LipSyncSource = \"없음\";",
+   "VrcToVrmWindow.cs:244: (!string.IsNullOrEmpty(_o.Blink), \"눈 깜빡임\", _o.Blink ?? \"없음\"),",
+   "VrcToVrmWindow.cs:309: var tip = shapes == null ? \"없음\" : string.Join(\"\\n\", shapes.Select(sv => $\"{sv.ShapeName} {sv.Weight:0}\"));"
+  ]
+ },
+ {
+  "key": "analysis.003",
+  "en": "The avatar descriptor is on the child object '{0}', so only that object will be converted.",
+  "ko": "아바타 디스크립터가 하위 오브젝트 '{0}'에 있어 그 오브젝트만 변환합니다.",
+  "ja": "アバターディスクリプターが子オブジェクト '{0}' にあるため、そのオブジェクトのみ変換します。",
+  "zh": "Avatar Descriptor 位于子对象 '{0}' 上，因此只转换该对象。",
+  "contexts": [
+   "VrcAvatarAnalysis.cs:96: a.Warnings.Add($\"아바타 디스크립터가 하위 오브젝트 '{root.name}'에 있어 그 오브젝트만 변환합니다.\");"
+  ]
+ },
+ {
+  "key": "analysis.004",
+  "en": "No VRCAvatarDescriptor. Expression, look-at and lip sync data will be empty.",
+  "ko": "VRCAvatarDescriptor가 없습니다. 표정/시선/립싱크 정보는 비게 됩니다.",
+  "ja": "VRCAvatarDescriptor がありません。表情・視線・リップシンクの情報は空になります。",
+  "zh": "没有 VRCAvatarDescriptor。表情、视线和口型同步信息将为空。",
+  "contexts": [
+   "VrcAvatarAnalysis.cs:100: if (a.Descriptor == null) a.Warnings.Add(\"VRCAvatarDescriptor가 없습니다. 표정/시선/립싱크 정보는 비게 됩니다.\");"
+  ]
+ },
+ {
+  "key": "analysis.005",
+  "en": "The root Animator has no Humanoid Avatar. Cannot export to VRM.",
+  "ko": "루트 Animator에 Humanoid Avatar가 없습니다. VRM으로 export할 수 없습니다.",
+  "ja": "ルートの Animator に Humanoid Avatar がありません。VRM にエクスポートできません。",
+  "zh": "根 Animator 没有 Humanoid Avatar。无法导出为 VRM。",
+  "contexts": [
+   "VrcAvatarAnalysis.cs:102: a.Warnings.Add(\"루트 Animator에 Humanoid Avatar가 없습니다. VRM으로 export할 수 없습니다.\");"
+  ]
+ },
+ {
+  "key": "analysis.006",
+  "en": "Descriptor (Viseme BlendShape)",
+  "ko": "디스크립터 (Viseme BlendShape)",
+  "ja": "ディスクリプター (Viseme BlendShape)",
+  "zh": "Descriptor (Viseme BlendShape)",
+  "contexts": [
+   "VrcAvatarAnalysis.cs:144: LipSyncSource = \"디스크립터 (Viseme BlendShape)\";"
+  ]
+ },
+ {
+  "key": "analysis.007",
+  "en": "Descriptor (Jaw Flap → A only)",
+  "ko": "디스크립터 (Jaw Flap → A만)",
+  "ja": "ディスクリプター (Jaw Flap → A のみ)",
+  "zh": "Descriptor (Jaw Flap → 仅 A)",
+  "contexts": [
+   "VrcAvatarAnalysis.cs:150: LipSyncSource = \"디스크립터 (Jaw Flap → A만)\";"
+  ]
+ },
+ {
+  "key": "analysis.008",
+  "en": "The descriptor has no face mesh set, so '{0}', which has the most blendshapes, is used as the face.",
+  "ko": "디스크립터에 얼굴 메시 지정이 없어 블렌드쉐이프가 가장 많은 '{0}'를 얼굴로 사용합니다.",
+  "ja": "ディスクリプターに顔メッシュの指定がないため、シェイプキーが最も多い '{0}' を顔として使用します。",
+  "zh": "Descriptor 未指定面部网格，将使用形态键最多的 '{0}' 作为面部。",
+  "contexts": [
+   "VrcAvatarAnalysis.cs:189: if (faceMesh != null) Warnings.Add($\"디스크립터에 얼굴 메시 지정이 없어 블렌드쉐이프가 가장 많은 '{faceMesh.name}'를 얼굴로 사용합니다.\");"
+  ]
+ },
+ {
+  "key": "analysis.009",
+  "en": "No blink (Blink) blendshape found. Unless you pick Blink yourself in the Expressions tab, the eyes won't blink in VRM.",
+  "ko": "눈 깜빡임(Blink) 블렌드쉐이프를 찾지 못했습니다. 표정 탭에서 Blink를 직접 고르지 않으면 VRM에서 눈을 깜빡이지 않습니다.",
+  "ja": "まばたき (Blink) のシェイプキーが見つかりませんでした。表情タブで Blink を自分で選ばないと、VRM でまばたきしません。",
+  "zh": "未找到眨眼 (Blink) 形态键。如果不在表情标签页中手动选择 Blink，VRM 中将不会眨眼。",
+  "contexts": [
+   "VrcAvatarAnalysis.cs:198: if (BlinkShape == null) Warnings.Add(\"눈 깜빡임(Blink) 블렌드쉐이프를 찾지 못했습니다.\");"
+  ]
+ },
+ {
+  "key": "analysis.010",
+  "en": "There's no FX layer, so emotion expressions (Joy, etc.) couldn't be filled in automatically. You can still convert with them empty.",
+  "ko": "FX 레이어가 없어 감정 표정(Joy 등)을 자동으로 채우지 못했습니다. 비워 둬도 변환은 됩니다.",
+  "ja": "FX レイヤーがないため、感情表情 (Joy など) を自動で設定できませんでした。空のままでも変換できます。",
+  "zh": "没有 FX 层，无法自动填入情绪表情 (Joy 等)。留空也可以转换。",
+  "contexts": [
+   "VrcAvatarAnalysis.cs:218: Warnings.Add(\"FX 레이어 컨트롤러가 없습니다. 감정 표정 후보가 없습니다.\");"
+  ]
+ },
+ {
+  "key": "analysis.011",
+  "en": "Couldn't read FX controller '{0}', so emotion expressions (Joy, etc.) couldn't be filled in automatically. You can still convert with them empty.",
+  "ko": "FX 컨트롤러 '{0}'를 읽을 수 없어 감정 표정(Joy 등)을 자동으로 채우지 못했습니다. 비워 둬도 변환은 됩니다.",
+  "ja": "FX コントローラー '{0}' を読み込めないため、感情表情 (Joy など) を自動で設定できませんでした。空のままでも変換できます。",
+  "zh": "无法读取 FX 控制器 '{0}'，无法自动填入情绪表情 (Joy 等)。留空也可以转换。",
+  "contexts": [
+   "VrcAvatarAnalysis.cs:236: Warnings.Add($\"FX 컨트롤러 '{Fx.name}'를 읽을 수 없습니다. 감정 표정 후보가 없습니다.\");"
+  ]
+ },
+ {
+  "key": "analysis.012",
+  "en": "FX layer (Viseme parameters)",
+  "ko": "FX 레이어 (Viseme 파라미터)",
+  "ja": "FX レイヤー (Viseme パラメーター)",
+  "zh": "FX 层 (Viseme 参数)",
+  "contexts": [
+   "VrcAvatarAnalysis.cs:290: if (Vowels.Count > 0) LipSyncSource = \"FX 레이어 (Viseme 파라미터)\";"
+  ]
+ },
+ {
+  "key": "analysis.013",
+  "en": "Guessed by name ({0})",
+  "ko": "이름으로 추정 ({0})",
+  "ja": "名前から推定 ({0})",
+  "zh": "按名称推测 ({0})",
+  "contexts": [
+   "VrcAvatarAnalysis.cs:310: if (Vowels.Count > 0) { LipSyncSource = $\"이름으로 추정 ({smr.name})\"; break; }"
+  ]
+ },
+ {
+  "key": "analysis.014",
+  "en": "No lip sync (A/I/U/E/O) blendshapes found. The mouth won't move in VRM.",
+  "ko": "립싱크(A/I/U/E/O) 블렌드쉐이프를 찾지 못했습니다. VRM에서 입이 움직이지 않습니다.",
+  "ja": "リップシンク (A/I/U/E/O) のシェイプキーが見つかりませんでした。VRM で口が動きません。",
+  "zh": "未找到口型同步 (A/I/U/E/O) 形态键。VRM 中嘴巴将不会动。",
+  "contexts": [
+   "VrcAvatarAnalysis.cs:314: if (Vowels.Count == 0) Warnings.Add(\"립싱크(A/I/U/E/O) 블렌드쉐이프를 찾지 못했습니다. VRM에서 입이 움직이지 않습니다.\");"
+  ]
+ },
+ {
+  "key": "analysis.015",
+  "en": "Only {0} of the lip sync vowels were found ({1}). The mouth will move less for the other vowels.",
+  "ko": "립싱크 모음 중 {0}만 찾았습니다 ({1}). 나머지 모음에서는 입이 덜 움직입니다.",
+  "ja": "リップシンクの母音は {0} のみ見つかりました ({1})。残りの母音では口の動きが小さくなります。",
+  "zh": "口型同步元音仅找到 {0} ({1})。其余元音的嘴部动作会较小。",
+  "contexts": [
+   "VrcAvatarAnalysis.cs:315: else if (Vowels.Count < 5) Warnings.Add($\"립싱크 모음 중 일부만 찾았습니다: {string.Join(\", \", Vowels.Keys)} ({LipSyncSource})\");"
+  ]
+ },
+ {
+  "key": "batch.001",
+  "en": "The selection contains no VRChat avatar prefabs. Select a prefab or folder in the Project window.",
+  "ko": "선택한 항목에 VRChat 아바타 프리팹이 없습니다. Project 창에서 프리팹이나 폴더를 선택하세요.",
+  "ja": "選択した項目に VRChat アバターのプレハブがありません。Project ウィンドウでプレハブかフォルダーを選択してください。",
+  "zh": "所选项目中没有 VRChat 模型预制件。请在 Project 窗口中选择预制件或文件夹。",
+  "contexts": [
+   "VrcToVrmBatch.cs:59: EditorUtility.DisplayDialog(\"VRC → VRM\", \"선택한 항목에 VRChat 아바타 프리팹이 없습니다. Project 창에서 프리팹이나 폴더를 선택하세요.\", \"OK\");"
+  ]
+ },
+ {
+  "key": "conv.001",
+  "en": "The root Animator has no Humanoid Avatar.",
+  "ko": "루트 Animator에 Humanoid Avatar가 없습니다.",
+  "ja": "ルートの Animator に Humanoid Avatar がありません。",
+  "zh": "根 Animator 没有 Humanoid Avatar。",
+  "contexts": [
+   "VrcToVrmConverter.cs:95: throw new Exception(\"루트 Animator에 Humanoid Avatar가 없습니다.\");",
+   "VrcToVrmWindow.cs:649: if (a.Animator == null || a.Animator.avatar == null || !a.Animator.avatar.isHuman) problems.Add(\"루트 Animator에 Humanoid Avatar가 없습니다.\");"
+  ]
+ },
+ {
+  "key": "conv.002",
+  "en": "[Material] Created {0} MToon materials",
+  "ko": "[Material] MToon 머티리얼 {0}개 생성",
+  "ja": "[Material] MToon マテリアルを {0}個作成",
+  "zh": "[Material] 已创建 {0} 个 MToon 材质",
+  "contexts": [
+   "VrcToVrmConverter.cs:142: log.Add($\"[Material] MToon 머티리얼 {saved.Count}개 생성\");"
+  ]
+ },
+ {
+  "key": "conv.003",
+  "en": "[Expression] {0}: No mesh in the VRM has the '{1}' blendshape, so that part of this expression won't move.",
+  "ko": "[Expression] {0}: '{1}' 블렌드쉐이프를 가진 메시가 VRM에 없어, 이 표정의 그 부분은 움직이지 않습니다.",
+  "ja": "[Expression] {0}: シェイプキー '{1}' を持つメッシュが VRM にないため、この表情のその部分は動きません。",
+  "zh": "[Expression] {0}: VRM 中没有含形态键 '{1}' 的网格，此表情的该部分不会动。",
+  "contexts": [
+   "VrcToVrmConverter.cs:162: log.Add($\"[Expression] {clipName}: '{shape}'를 가진 메시를 찾지 못해 건너뜀(이름이 겹치거나 숨김 오브젝트로 제거됨)\");"
+  ]
+ },
+ {
+  "key": "conv.004",
+  "en": "[Expression] {0}: '{1}' has no '{2}' blendshape, so that part of this expression won't move.",
+  "ko": "[Expression] {0}: '{1}'에 '{2}' 블렌드쉐이프가 없어, 이 표정의 그 부분은 움직이지 않습니다.",
+  "ja": "[Expression] {0}: '{1}' にシェイプキー '{2}' がないため、この表情のその部分は動きません。",
+  "zh": "[Expression] {0}: '{1}' 没有形态键 '{2}'，此表情的该部分不会动。",
+  "contexts": [
+   "VrcToVrmConverter.cs:166: if (idx < 0) { log.Add($\"[Expression] {clipName}: '{smr.name}'에 '{shape}' 블렌드쉐이프가 없어 건너뜀\"); continue; }"
+  ]
+ },
+ {
+  "key": "conv.005",
+  "en": "[Expression] {0} presets / {1} custom",
+  "ko": "[Expression] 프리셋 {0}개 / 커스텀 {1}개",
+  "ja": "[Expression] プリセット {0}個 / カスタム {1}個",
+  "zh": "[Expression] 预设 {0} 个 / 自定义 {1} 个",
+  "contexts": [
+   "VrcToVrmConverter.cs:207: log.Add($\"[Expression] 프리셋 {clips.Count(c => c.Preset != BlendShapePreset.Unknown && c.Values.Length > 0)}개 / 커스텀 {clips.Count(c => c.Preset == BlendShapePreset.Unknown)}개\");"
+  ]
+ },
+ {
+  "key": "conv.006",
+  "en": "[LookAt] There are no eye bones, so the eyes won't follow the gaze in VRM.",
+  "ko": "[LookAt] 눈 본이 없어 VRM에서 눈동자가 시선을 따라 움직이지 않습니다.",
+  "ja": "[LookAt] 目のボーンがないため、VRM で瞳が視線に合わせて動きません。",
+  "zh": "[LookAt] 没有眼睛骨骼，VRM 中眼珠不会随视线移动。",
+  "contexts": [
+   "VrcToVrmConverter.cs:226: else log.Add(\"[LookAt] 눈 본이 없어 시선(LookAt)을 설정하지 않았습니다.\");"
+  ]
+ },
+ {
+  "key": "conv.007",
+  "en": "[Cleanup] Removed {0} hidden renderers, {1} inactive objects, {2} springs used only by hidden clothing",
+  "ko": "[Cleanup] 숨겨진 렌더러 {0}개, 비활성 오브젝트 {1}개, 숨겨진 옷 전용 스프링 {2}개 제거",
+  "ja": "[Cleanup] 非表示レンダラー {0}個、無効オブジェクト {1}個、非表示衣装専用の揺れもの {2}個を削除",
+  "zh": "[Cleanup] 已移除隐藏渲染器 {0} 个、未启用对象 {1} 个、仅用于隐藏服装的动骨 {2} 个",
+  "contexts": [
+   "VrcToVrmConverter.cs:329: log.Add($\"[Cleanup] 숨겨진 렌더러 {removedRenderers}개, 비활성 오브젝트 {removedObjects}개, 숨겨진 옷 전용 스프링 {prunedSprings}개 제거\");"
+  ]
+ },
+ {
+  "key": "conv.008",
+  "en": "[Material] {0} overlay effects (FakeShadow, etc.) aren't supported in VRM and were left out. Effects like hair shadows may look a little different.",
+  "ko": "[Material] 겹쳐 그리는 효과(FakeShadow 등) {0}개는 VRM에 없어 빠졌습니다. 머리카락 그림자 같은 연출이 조금 다르게 보일 수 있습니다.",
+  "ja": "[Material] 重ね描きの効果 (FakeShadow など) {0}個は VRM にないため外れました。髪の影などの演出が少し違って見えることがあります。",
+  "zh": "[Material] {0} 个叠加绘制效果 (FakeShadow 等) VRM 不支持，已去除。头发阴影等效果可能看起来略有不同。",
+  "contexts": [
+   "VrcToVrmConverter.cs:366: if (extra > 0) log.Add($\"[Material] 서브메시 수를 넘는 추가 머티리얼 슬롯 {extra}개(FakeShadow 등 멀티패스)는 VRM에 없어 제외했습니다.\");"
+  ]
+ },
+ {
+  "key": "conv.009",
+  "en": "[Material] Removed {0} shadow-effect-only meshes (FakeShadow). The shadow cast by the hair on the face will be gone.",
+  "ko": "[Material] 그림자 연출 전용 메시(FakeShadow) {0}개를 뺐습니다. 머리카락이 얼굴에 드리우던 그림자가 없어집니다.",
+  "ja": "[Material] 影演出専用のメッシュ (FakeShadow) {0}個を外しました。髪が顔に落としていた影はなくなります。",
+  "zh": "[Material] 已移除 {0} 个阴影效果专用网格 (FakeShadow)。头发投在脸上的阴影会消失。",
+  "contexts": [
+   "VrcToVrmConverter.cs:367: if (fakeOnly > 0) log.Add($\"[Material] FakeShadow 전용 렌더러 {fakeOnly}개를 제외했습니다.\");"
+  ]
+ },
+ {
+  "key": "conv.010",
+  "en": "[Material] Removed {0} meshes that were already invisible (gimmick colliders, etc.). The look is unchanged.",
+  "ko": "[Material] 원래 보이지 않던 메시 {0}개(기믹용 콜라이더 등)를 뺐습니다. 겉모습은 그대로입니다.",
+  "ja": "[Material] もともと見えなかったメッシュ {0}個 (ギミック用コライダーなど) を外しました。見た目は変わりません。",
+  "zh": "[Material] 已移除 {0} 个原本就不可见的网格 (如机关用碰撞体)。外观不变。",
+  "contexts": [
+   "VrcToVrmConverter.cs:368: if (noMaterial > 0) log.Add($\"[Material] 머티리얼이 없어 보이지 않는 렌더러 {noMaterial}개(기믹용 콜라이더 등)를 제외했습니다.\");"
+  ]
+ },
+ {
+  "key": "conv.011",
+  "en": "[Cleanup] Removed components: ",
+  "ko": "[Cleanup] 제거한 컴포넌트: ",
+  "ja": "[Cleanup] 削除したコンポーネント: ",
+  "zh": "[Cleanup] 已移除的组件: ",
+  "contexts": [
+   "VrcToVrmConverter.cs:390: log.Add(\"[Cleanup] 제거한 컴포넌트: \" + string.Join(\", \", removed.OrderByDescending(kv => kv.Value).Select(kv => $\"{kv.Key}×{kv.Value}\")));"
+  ]
+ },
+ {
+  "key": "conv.012",
+  "en": "[Error] The output folder must be inside Assets: {0}",
+  "ko": "[Error] 출력 폴더는 Assets 안이어야 합니다: {0}",
+  "ja": "[Error] 出力フォルダーは Assets 内である必要があります: {0}",
+  "zh": "[Error] 输出文件夹必须位于 Assets 内: {0}",
+  "contexts": [
+   "VrcToVrmConverter.cs:418: log.Add($\"[Error] 출력 폴더는 Assets 안이어야 합니다: {folder}\");"
+  ]
+ },
+ {
+  "key": "conv.013",
+  "en": "[Error] The output folder ({0}) contains the source avatar ({1}). Choose a different output folder.",
+  "ko": "[Error] 출력 폴더({0})가 원본 아바타({1})를 포함합니다. 다른 출력 폴더를 지정하세요.",
+  "ja": "[Error] 出力フォルダー ({0}) に元のアバター ({1}) が含まれています。別の出力フォルダーを指定してください。",
+  "zh": "[Error] 输出文件夹 ({0}) 包含原始模型 ({1})。请指定其他输出文件夹。",
+  "contexts": [
+   "VrcToVrmConverter.cs:425: log.Add($\"[Error] 출력 폴더({folder})가 원본 아바타({sourcePath})를 포함합니다. 다른 출력 폴더를 지정하세요.\");"
+  ]
+ },
+ {
+  "key": "conv.014",
+  "en": "[Error] The folder {0} already exists and wasn't created by this tool, so it was not overwritten. Choose a different output folder.",
+  "ko": "[Error] {0} 폴더가 이미 있고 이 툴이 만든 폴더가 아니라서 덮어쓰지 않았습니다. 다른 출력 폴더를 지정하세요.",
+  "ja": "[Error] {0} フォルダーは既に存在し、このツールが作成したものではないため上書きしませんでした。別の出力フォルダーを指定してください。",
+  "zh": "[Error] {0} 文件夹已存在且并非本工具创建，因此未覆盖。请指定其他输出文件夹。",
+  "contexts": [
+   "VrcToVrmConverter.cs:436: log.Add($\"[Error] {folder} 폴더가 이미 있고 이 툴이 만든 폴더가 아니라서 덮어쓰지 않았습니다. 다른 출력 폴더를 지정하세요.\");"
+  ]
+ },
+ {
+  "key": "conv.015",
+  "en": "[Export] Restored {0} source texture compression settings changed by UniVRM.",
+  "ko": "[Export] UniVRM이 바꾼 원본 텍스처 압축 설정 {0}개를 원래대로 되돌렸습니다.",
+  "ja": "[Export] UniVRM が変更した元テクスチャの圧縮設定 {0}個を元に戻しました。",
+  "zh": "[Export] 已还原 UniVRM 修改的 {0} 项原始贴图压缩设置。",
+  "contexts": [
+   "VrcToVrmConverter.cs:486: if (restored > 0) log.Add($\"[Export] UniVRM이 바꾼 원본 텍스처 압축 설정 {restored}개를 원래대로 되돌렸습니다.\");"
+  ]
+ },
+ {
+  "key": "mat.001",
+  "en": "VRM/MToon shader not found (check that UniVRM is installed).",
+  "ko": "VRM/MToon 셰이더를 찾을 수 없습니다 (UniVRM 설치 확인).",
+  "ja": "VRM/MToon シェーダーが見つかりません (UniVRM のインストールを確認してください)。",
+  "zh": "找不到 VRM/MToon 着色器 (请确认已安装 UniVRM)。",
+  "contexts": [
+   "LilToonToMToon.cs:52: if (shader == null) throw new System.Exception(\"VRM/MToon 셰이더를 찾을 수 없습니다 (UniVRM 설치 확인).\");"
+  ]
+ },
+ {
+  "key": "mat.002",
+  "en": "[Material] {0}: The shadow effect (FakeShadow) can't be shown in VRM, so it was hidden.",
+  "ko": "[Material] {0}: 그림자 연출(FakeShadow)은 VRM에서 표현할 수 없어 숨겼습니다.",
+  "ja": "[Material] {0}: 影の演出 (FakeShadow) は VRM で表現できないため非表示にしました。",
+  "zh": "[Material] {0}: 阴影效果 (FakeShadow) 无法在 VRM 中表现，已隐藏。",
+  "contexts": [
+   "LilToonToMToon.cs:68: Log.Add($\"[Material] {src.name}: FakeShadow는 MToon으로 표현할 수 없어 투명 처리했습니다.\");"
+  ]
+ },
+ {
+  "key": "mat.003",
+  "en": "[Material] {0}: Not a lilToon shader ({1}), so only the main texture/color was copied.",
+  "ko": "[Material] {0}: lilToon이 아닌 셰이더({1})라 메인 텍스처/색상만 옮겼습니다.",
+  "ja": "[Material] {0}: lilToon 以外のシェーダー ({1}) のため、メインテクスチャ/色のみ移しました。",
+  "zh": "[Material] {0}: 非 lilToon 着色器 ({1})，仅迁移了主贴图/颜色。",
+  "contexts": [
+   "LilToonToMToon.cs:80: Log.Add($\"[Material] {src.name}: lilToon이 아닌 셰이더({src.shader.name})라 메인 텍스처/색상만 옮겼습니다.\");"
+  ]
+ },
+ {
+  "key": "mat.004",
+  "en": "[Material] {0}: Removed the shine (MatCap) that was only on some areas. Those areas may look less glossy. (effective strength {1:0.00})",
+  "ko": "[Material] {0}: 일부에만 있던 광택(MatCap)을 뺐습니다. 그 부분의 반짝임이 약해 보일 수 있습니다. (유효 강도 {1:0.00})",
+  "ja": "[Material] {0}: 一部にだけあった光沢 (MatCap) を外しました。その部分のツヤが弱く見えることがあります。(実効強度 {1:0.00})",
+  "zh": "[Material] {0}: 已去除仅作用于局部的光泽 (MatCap)。该部分的光泽可能会显得较弱。(有效强度 {1:0.00})",
+  "contexts": [
+   "LilToonToMToon.cs:191: Log.Add($\"[Material] {src.name}: MatCap이 마스크·강도로 일부에만 적용돼(유효 강도 {strength:0.00}) MToon에서는 전체가 번들거리므로 제외했습니다.\");"
+  ]
+ },
+ {
+  "key": "mat.005",
+  "en": "[Material] {0}: The shine (MatCap) that was only on some areas is now applied lightly to the whole surface. (average strength {1:0.00})",
+  "ko": "[Material] {0}: 일부에만 있던 광택(MatCap)이 표면 전체에 약하게 적용됩니다. (평균 강도 {1:0.00})",
+  "ja": "[Material] {0}: 一部にだけあった光沢 (MatCap) が表面全体に弱くかかります。(平均強度 {1:0.00})",
+  "zh": "[Material] {0}: 原本仅作用于局部的光泽 (MatCap) 将以较弱强度作用于整个表面。(平均强度 {1:0.00})",
+  "contexts": [
+   "LilToonToMToon.cs:197: if (mask != null) Log.Add($\"[Material] {src.name}: MatCap 마스크는 MToon에 없어 평균 강도({strength:0.00})로 근사했습니다.\");"
+  ]
+ },
+ {
+  "key": "mat.006",
+  "en": "[Material] {0}: The outline may look a little different (tessellation not supported).",
+  "ko": "[Material] {0}: 아웃라인이 조금 다르게 보일 수 있습니다(테셀레이션 미지원).",
+  "ja": "[Material] {0}: アウトラインが少し違って見えることがあります (テッセレーション非対応)。",
+  "zh": "[Material] {0}: 描边可能看起来略有不同 (不支持曲面细分)。",
+  "contexts": [
+   "LilToonToMToon.cs:228: if (shaderName.Contains(\"Tessellation\")) Log.Add($\"[Material] {src.name}: 테셀레이션은 MToon에 없어 일반 아웃라인으로 변환했습니다.\");"
+  ]
+ },
+ {
+  "key": "mat.007",
+  "en": "[Material] {0}: Special effects like glass or fur ({1}) will look like plain semi-transparency.",
+  "ko": "[Material] {0}: 유리·털 같은 특수 효과({1})는 단순한 반투명으로 보입니다.",
+  "ja": "[Material] {0}: ガラス・ファーのような特殊効果 ({1}) は単純な半透明に見えます。",
+  "zh": "[Material] {0}: 玻璃、毛发等特殊效果 ({1}) 会显示为简单的半透明。",
+  "contexts": [
+   "LilToonToMToon.cs:230: Log.Add($\"[Material] {src.name}: 굴절/퍼 셰이더({shaderName})는 반투명으로 근사했습니다.\");"
+  ]
+ },
+ {
+  "key": "mat.008",
+  "en": "[Material] {0}: Baked the 2nd/3rd layers and color correction into the main texture.",
+  "ko": "[Material] {0}: 2nd/3rd 레이어와 색조 보정을 메인 텍스처에 베이크했습니다.",
+  "ja": "[Material] {0}: 2nd/3rd レイヤーと色調補正をメインテクスチャにベイクしました。",
+  "zh": "[Material] {0}: 已将 2nd/3rd 图层和色调校正烘焙到主贴图。",
+  "contexts": [
+   "LilToonToMToon.cs:274: Log.Add($\"[Material] {src.name}: 2nd/3rd 레이어와 색조 보정을 메인 텍스처에 베이크했습니다.\");"
+  ]
+ },
+ {
+  "key": "mat.009",
+  "en": "[Material] {0}: Baked the alpha mask (_AlphaMask) into the main texture's alpha.",
+  "ko": "[Material] {0}: 알파 마스크(_AlphaMask)를 메인 텍스처 알파에 베이크했습니다.",
+  "ja": "[Material] {0}: アルファマスク (_AlphaMask) をメインテクスチャのアルファにベイクしました。",
+  "zh": "[Material] {0}: 已将 Alpha 遮罩 (_AlphaMask) 烘焙到主贴图的 Alpha 通道。",
+  "contexts": [
+   "LilToonToMToon.cs:390: Log.Add($\"[Material] {src.name}: 알파 마스크(_AlphaMask)를 메인 텍스처 알파에 베이크했습니다.\");"
+  ]
+ },
+ {
+  "key": "spring.001",
+  "en": "[Spring] Skipped {0} inactive PhysBones.",
+  "ko": "[Spring] 비활성 PhysBone {0}개는 변환하지 않았습니다.",
+  "ja": "[Spring] 無効な PhysBone {0}個は変換しませんでした。",
+  "zh": "[Spring] 未转换 {0} 个未启用的 PhysBone。",
+  "contexts": [
+   "PhysBoneToSpringBone.cs:43: if (skipped > 0) log.Add($\"[Spring] 비활성 PhysBone {skipped}개는 변환하지 않았습니다.\");"
+  ]
+ },
+ {
+  "key": "spring.002",
+  "en": "[Spring] Settings that varied the sway per part (curves) were dropped; each bone uses the same values.",
+  "ko": "[Spring] 부위별로 흔들림 강도를 다르게 주던 설정(커브)은 빠지고, 본마다 같은 값이 쓰입니다.",
+  "ja": "[Spring] 部位ごとに揺れの強さを変える設定 (カーブ) は外れ、ボーンごとに同じ値が使われます。",
+  "zh": "[Spring] 按部位设置不同摆动强度的设定 (曲线) 已去除，每根骨骼使用相同的值。",
+  "contexts": [
+   "PhysBoneToSpringBone.cs:73: log.Add(\"[Spring] PhysBone의 커브(pull/spring/radius/gravity curve)는 VRM 0.x에 없어 무시하고 기본값만 사용했습니다.\");"
+  ]
+ },
+ {
+  "key": "spring.003",
+  "en": "[Spring] Removed {0} arm collider links from PhysBones with rotation limits (prevents hair from catching and lifting when arms are raised).",
+  "ko": "[Spring] 회전 제한이 있는 PhysBone에서 팔 콜라이더 연결 {0}개를 뺐습니다(팔을 들 때 머리카락이 걸려 들리는 것 방지).",
+  "ja": "[Spring] 回転制限のある PhysBone から腕コライダーの接続を {0}個外しました (腕を上げたとき髪が引っかかって持ち上がるのを防止)。",
+  "zh": "[Spring] 已从带旋转限制的 PhysBone 中移除 {0} 个手臂碰撞体关联 (防止抬手时头发被勾起)。",
+  "contexts": [
+   "PhysBoneToSpringBone.cs:92: log.Add($\"[Spring] 회전 제한이 있는 PhysBone에서 팔 콜라이더 연결 {droppedArm}개를 뺐습니다(팔을 들 때 머리카락이 걸려 들리는 것 방지).\");"
+  ]
+ },
+ {
+  "key": "spring.004",
+  "en": "[Spring] VRM has no sway angle limits, so some parts ({0}) may sway more than in VRChat: {1}{2}",
+  "ko": "[Spring] VRM에는 흔들림 각도 제한이 없어, 일부 부위({0}개)가 VRChat보다 크게 흔들릴 수 있습니다: {1}{2}",
+  "ja": "[Spring] VRM には揺れの角度制限がないため、一部の部位 ({0}個) が VRChat より大きく揺れることがあります: {1}{2}",
+  "zh": "[Spring] VRM 没有摆动角度限制，部分部位 ({0} 个) 可能比在 VRChat 中摆动更大: {1}{2}",
+  "contexts": [
+   "PhysBoneToSpringBone.cs:94: log.Add($\"[Spring] 회전 제한(limit)은 VRM 0.x에 없어 무시했습니다 ({limited.Count}개): {string.Join(\", \", limited.Take(8))}{(limited.Count > 8 ? \" …\" : \"\")}\");"
+  ]
+ },
+ {
+  "key": "spring.005",
+  "en": "[Spring] {0} PhysBones → {1} VRMSpringBones, {2} collider groups",
+  "ko": "[Spring] PhysBone {0}개 → VRMSpringBone {1}개, 콜라이더 그룹 {2}개",
+  "ja": "[Spring] PhysBone {0}個 → VRMSpringBone {1}個、コライダーグループ {2}個",
+  "zh": "[Spring] PhysBone {0} 个 → VRMSpringBone {1} 个，碰撞体组 {2} 个",
+  "contexts": [
+   "PhysBoneToSpringBone.cs:116: log.Add($\"[Spring] PhysBone {physBones.Count}개 → VRMSpringBone {count}개, 콜라이더 그룹 {groups.Values.Distinct().Count()}개\");"
+  ]
+ },
+ {
+  "key": "spring.006",
+  "en": "[Spring] {0}: Floor collision (Plane) isn't in VRM and was dropped. Long hair or tails may go through the floor.",
+  "ko": "[Spring] {0}: 바닥 충돌(Plane)은 VRM에 없어 빠졌습니다. 긴 머리나 꼬리가 바닥을 뚫을 수 있습니다.",
+  "ja": "[Spring] {0}: 床との衝突 (Plane) は VRM にないため外れました。長い髪や尻尾が床を突き抜けることがあります。",
+  "zh": "[Spring] {0}: VRM 不支持地面碰撞 (Plane)，已去除。长发或尾巴可能会穿过地面。",
+  "contexts": [
+   "PhysBoneToSpringBone.cs:167: log.Add($\"[Spring] {target.name}: 평면(Plane) 콜라이더는 VRM 0.x에 없어 제외했습니다.\");"
+  ]
+ },
+ {
+  "key": "spring.007",
+  "en": "[Spring] {0}: Inner collision (Inside Bounds) isn't in VRM and was dropped. That part may sway outside its set range.",
+  "ko": "[Spring] {0}: 안쪽 충돌(Inside Bounds)은 VRM에 없어 빠졌습니다. 그 부위가 정해진 범위 밖으로 흔들릴 수 있습니다.",
+  "ja": "[Spring] {0}: 内側の衝突 (Inside Bounds) は VRM にないため外れました。その部位が決められた範囲の外まで揺れることがあります。",
+  "zh": "[Spring] {0}: VRM 不支持内侧碰撞 (Inside Bounds)，已去除。该部位可能会摆出设定范围。",
+  "contexts": [
+   "PhysBoneToSpringBone.cs:172: log.Add($\"[Spring] {target.name}: Inside Bounds 콜라이더는 VRM 0.x에 없어 제외했습니다.\");"
+  ]
+ },
+ {
+  "key": "ui.001",
+  "en": "Select a VRChat avatar to convert (a prefab or scene object with a VRCAvatarDescriptor).",
+  "ko": "변환할 VRChat 아바타(VRCAvatarDescriptor가 있는 프리팹 또는 씬 오브젝트)를 선택하세요.",
+  "ja": "変換する VRChat アバター (VRCAvatarDescriptor のあるプレハブまたはシーンのオブジェクト) を選択してください。",
+  "zh": "请选择要转换的 VRChat 模型 (带有 VRCAvatarDescriptor 的预制件或场景对象)。",
+  "contexts": [
+   "VrcToVrmWindow.cs:130: EditorGUILayout.HelpBox(\"변환할 VRChat 아바타(VRCAvatarDescriptor가 있는 프리팹 또는 씬 오브젝트)를 선택하세요.\", MessageType.Info);"
+  ]
+ },
+ {
+  "key": "ui.002",
+  "en": "Result ✓",
+  "ko": "결과 ✓",
+  "ja": "結果 ✓",
+  "zh": "结果 ✓",
+  "contexts": [
+   "VrcToVrmWindow.cs:135: var labels = TabLabels.Select((t, i) => i == (int)Tab.Result && _result != null ? (_result.Success ? \"결과 ✓\" : \"결과 ✕\") : t).ToArray();"
+  ]
+ },
+ {
+  "key": "ui.003",
+  "en": "Result ✕",
+  "ko": "결과 ✕",
+  "ja": "結果 ✕",
+  "zh": "结果 ✕",
+  "contexts": [
+   "VrcToVrmWindow.cs:135: var labels = TabLabels.Select((t, i) => i == (int)Tab.Result && _result != null ? (_result.Success ? \"결과 ✓\" : \"결과 ✕\") : t).ToArray();"
+  ]
+ },
+ {
+  "key": "ui.004",
+  "en": "VRC avatar",
+  "ko": "VRC 아바타",
+  "ja": "VRC アバター",
+  "zh": "VRC 模型",
+  "contexts": [
+   "VrcToVrmWindow.cs:171: var picked = (GameObject)EditorGUILayout.ObjectField(\"VRC 아바타\", _source, typeof(GameObject), true);"
+  ]
+ },
+ {
+  "key": "ui.005",
+  "en": "Selection",
+  "ko": "선택 항목",
+  "ja": "選択中",
+  "zh": "所选",
+  "contexts": [
+   "VrcToVrmWindow.cs:176: if (GUILayout.Button(new GUIContent(\"선택 항목\", \"Hierarchy/Project에서 선택한 오브젝트를 사용\"), EditorStyles.miniButton, GUILayout.Width(70)))"
+  ]
+ },
+ {
+  "key": "ui.006",
+  "en": "Use the object selected in Hierarchy/Project",
+  "ko": "Hierarchy/Project에서 선택한 오브젝트를 사용",
+  "ja": "Hierarchy/Project で選択中のオブジェクトを使用",
+  "zh": "使用在 Hierarchy/Project 中选中的对象",
+  "contexts": [
+   "VrcToVrmWindow.cs:176: if (GUILayout.Button(new GUIContent(\"선택 항목\", \"Hierarchy/Project에서 선택한 오브젝트를 사용\"), EditorStyles.miniButton, GUILayout.Width(70)))"
+  ]
+ },
+ {
+  "key": "ui.007",
+  "en": "Re-analyze",
+  "ko": "다시 분석",
+  "ja": "再解析",
+  "zh": "重新分析",
+  "contexts": [
+   "VrcToVrmWindow.cs:178: if (GUILayout.Button(new GUIContent(EditorGUIUtility.IconContent(\"Refresh\").image, \"다시 분석\"), EditorStyles.miniButton, GUILayout.Width(28)) && _source != null)"
+  ]
+ },
+ {
+  "key": "ui.008",
+  "en": "Humanoid Avatar found",
+  "ko": "Humanoid Avatar 있음",
+  "ja": "Humanoid Avatar あり",
+  "zh": "有 Humanoid Avatar",
+  "contexts": [
+   "VrcToVrmWindow.cs:242: (humanoid, \"Humanoid\", humanoid ? \"Humanoid Avatar 있음\" : \"루트 Animator에 Humanoid Avatar가 없어 변환할 수 없습니다\"),"
+  ]
+ },
+ {
+  "key": "ui.009",
+  "en": "The root Animator has no Humanoid Avatar, so it can't be converted",
+  "ko": "루트 Animator에 Humanoid Avatar가 없어 변환할 수 없습니다",
+  "ja": "ルートの Animator に Humanoid Avatar がないため変換できません",
+  "zh": "根 Animator 没有 Humanoid Avatar，无法转换",
+  "contexts": [
+   "VrcToVrmWindow.cs:242: (humanoid, \"Humanoid\", humanoid ? \"Humanoid Avatar 있음\" : \"루트 Animator에 Humanoid Avatar가 없어 변환할 수 없습니다\"),"
+  ]
+ },
+ {
+  "key": "ui.010",
+  "en": "Lip sync {0}/5",
+  "ko": "립싱크 {0}/5",
+  "ja": "リップシンク {0}/5",
+  "zh": "口型同步 {0}/5",
+  "contexts": [
+   "VrcToVrmWindow.cs:243: (a.Vowels.Count == 5, $\"립싱크 {a.Vowels.Count}/5\", a.LipSyncSource),"
+  ]
+ },
+ {
+  "key": "ui.011",
+  "en": "Blink",
+  "ko": "눈 깜빡임",
+  "ja": "まばたき",
+  "zh": "眨眼",
+  "contexts": [
+   "VrcToVrmWindow.cs:244: (!string.IsNullOrEmpty(_o.Blink), \"눈 깜빡임\", _o.Blink ?? \"없음\"),"
+  ]
+ },
+ {
+  "key": "ui.012",
+  "en": "Look-at",
+  "ko": "시선",
+  "ja": "視線",
+  "zh": "视线",
+  "contexts": [
+   "VrcToVrmWindow.cs:245: (a.LeftEye && a.RightEye, \"시선\", a.LeftEye && a.RightEye ? $\"{a.LeftEye.name} / {a.RightEye.name}\" : \"눈 본 없음\"),"
+  ]
+ },
+ {
+  "key": "ui.013",
+  "en": "No eye bones",
+  "ko": "눈 본 없음",
+  "ja": "目のボーンなし",
+  "zh": "无眼睛骨骼",
+  "contexts": [
+   "VrcToVrmWindow.cs:245: (a.LeftEye && a.RightEye, \"시선\", a.LeftEye && a.RightEye ? $\"{a.LeftEye.name} / {a.RightEye.name}\" : \"눈 본 없음\"),"
+  ]
+ },
+ {
+  "key": "ui.014",
+  "en": "Expressions {0}",
+  "ko": "표정 후보 {0}",
+  "ja": "表情候補 {0}",
+  "zh": "表情候选 {0}",
+  "contexts": [
+   "VrcToVrmWindow.cs:246: (a.Candidates.Count > 0, $\"표정 후보 {a.Candidates.Count}\", a.Fx ? a.Fx.name : \"FX 없음\"),"
+  ]
+ },
+ {
+  "key": "ui.015",
+  "en": "No FX",
+  "ko": "FX 없음",
+  "ja": "FX なし",
+  "zh": "无 FX",
+  "contexts": [
+   "VrcToVrmWindow.cs:246: (a.Candidates.Count > 0, $\"표정 후보 {a.Candidates.Count}\", a.Fx ? a.Fx.name : \"FX 없음\"),"
+  ]
+ },
+ {
+  "key": "ui.020",
+  "en": "Use ▶ to preview an expression on the avatar in the scene.",
+  "ko": "▶ 버튼으로 씬의 아바타에 표정을 미리 적용합니다.",
+  "ja": "▶ ボタンでシーンのアバターに表情をプレビュー適用します。",
+  "zh": "用 ▶ 按钮在场景中的模型上预览表情。",
+  "contexts": [
+   "VrcToVrmWindow.cs:291: GUILayout.Label(\"▶ 버튼으로 씬의 아바타에 표정을 미리 적용합니다.\", EditorStyles.miniLabel, GUILayout.MinWidth(0));"
+  ]
+ },
+ {
+  "key": "ui.021",
+  "en": "Previewing: {0}",
+  "ko": "미리보기 중: {0}",
+  "ja": "プレビュー中: {0}",
+  "zh": "预览中: {0}",
+  "contexts": [
+   "VrcToVrmWindow.cs:293: GUILayout.Label($\"미리보기 중: {_preview.Current}\", EditorStyles.boldLabel, GUILayout.MinWidth(0));"
+  ]
+ },
+ {
+  "key": "ui.022",
+  "en": "Reset",
+  "ko": "원래대로",
+  "ja": "元に戻す",
+  "zh": "还原",
+  "contexts": [
+   "VrcToVrmWindow.cs:296: if (GUILayout.Button(\"원래대로\", GUILayout.Width(80))) { _preview.Clear(); SceneView.RepaintAll(); }"
+  ]
+ },
+ {
+  "key": "ui.023",
+  "en": "Basic expressions",
+  "ko": "기본 표정",
+  "ja": "基本表情",
+  "zh": "基础表情",
+  "contexts": [
+   "VrcToVrmWindow.cs:300: Section(\"기본 표정\", \"VRChat 설정(Viseme, 눈꺼풀)에서 가져온 값입니다.\");"
+  ]
+ },
+ {
+  "key": "ui.024",
+  "en": "Taken from the VRChat settings (Viseme, eyelids).",
+  "ko": "VRChat 설정(Viseme, 눈꺼풀)에서 가져온 값입니다.",
+  "ja": "VRChat の設定 (Viseme、まぶた) から取得した値です。",
+  "zh": "取自 VRChat 设置 (Viseme、眼睑) 的值。",
+  "contexts": [
+   "VrcToVrmWindow.cs:300: Section(\"기본 표정\", \"VRChat 설정(Viseme, 눈꺼풀)에서 가져온 값입니다.\");"
+  ]
+ },
+ {
+  "key": "ui.025",
+  "en": "Lip sync A/I/U/E/O",
+  "ko": "립싱크 A/I/U/E/O",
+  "ja": "リップシンク A/I/U/E/O",
+  "zh": "口型同步 A/I/U/E/O",
+  "contexts": [
+   "VrcToVrmWindow.cs:303: EditorGUILayout.PrefixLabel(new GUIContent(\"립싱크 A/I/U/E/O\", a.LipSyncSource));"
+  ]
+ },
+ {
+  "key": "ui.026",
+  "en": "(No lip sync blendshapes)",
+  "ko": "(립싱크 블렌드쉐이프 없음)",
+  "ja": "(リップシンクのシェイプキーなし)",
+  "zh": "(无口型同步形态键)",
+  "contexts": [
+   "VrcToVrmWindow.cs:315: else GUILayout.Label(\"(립싱크 블렌드쉐이프 없음)\", EditorStyles.miniLabel);"
+  ]
+ },
+ {
+  "key": "ui.027",
+  "en": "Source: {0}",
+  "ko": "출처: {0}",
+  "ja": "取得元: {0}",
+  "zh": "来源: {0}",
+  "contexts": [
+   "VrcToVrmWindow.cs:317: EditorGUILayout.LabelField(\" \", $\"출처: {a.LipSyncSource}\", EditorStyles.miniLabel);"
+  ]
+ },
+ {
+  "key": "ui.028",
+  "en": "Emotions",
+  "ko": "감정",
+  "ja": "感情",
+  "zh": "情绪",
+  "contexts": [
+   "VrcToVrmWindow.cs:325: Section(\"감정\", \"FX 레이어 애니메이션에서 이름으로 추정했습니다. 다르면 바꿔 주세요.\");"
+  ]
+ },
+ {
+  "key": "ui.029",
+  "en": "Guessed by name from FX layer animations. Change them if they're wrong.",
+  "ko": "FX 레이어 애니메이션에서 이름으로 추정했습니다. 다르면 바꿔 주세요.",
+  "ja": "FX レイヤーのアニメーションから名前で推定しました。違う場合は変更してください。",
+  "zh": "根据 FX 层动画名称推测。如有不符请修改。",
+  "contexts": [
+   "VrcToVrmWindow.cs:325: Section(\"감정\", \"FX 레이어 애니메이션에서 이름으로 추정했습니다. 다르면 바꿔 주세요.\");"
+  ]
+ },
+ {
+  "key": "ui.030",
+  "en": "Custom expressions",
+  "ko": "커스텀 표정",
+  "ja": "カスタム表情",
+  "zh": "自定义表情",
+  "contexts": [
+   "VrcToVrmWindow.cs:345: Section(\"커스텀 표정\", \"체크한 애니메이션은 VRM 커스텀 표정으로도 들어갑니다.\");"
+  ]
+ },
+ {
+  "key": "ui.032",
+  "en": "All",
+  "ko": "전체",
+  "ja": "全選択",
+  "zh": "全选",
+  "contexts": [
+   "VrcToVrmWindow.cs:349: if (GUILayout.Button(\"전체\", EditorStyles.miniButtonLeft, GUILayout.Width(40))) _o.Customs.UnionWith(Filtered());"
+  ]
+ },
+ {
+  "key": "ui.033",
+  "en": "None",
+  "ko": "해제",
+  "ja": "解除",
+  "zh": "取消",
+  "contexts": [
+   "VrcToVrmWindow.cs:350: if (GUILayout.Button(\"해제\", EditorStyles.miniButtonMid, GUILayout.Width(40))) _o.Customs.ExceptWith(Filtered());"
+  ]
+ },
+ {
+  "key": "ui.034",
+  "en": "Gestures",
+  "ko": "제스처만",
+  "ja": "ジェスチャー",
+  "zh": "仅手势",
+  "contexts": [
+   "VrcToVrmWindow.cs:351: if (GUILayout.Button(\"제스처만\", EditorStyles.miniButtonRight, GUILayout.Width(56)))"
+  ]
+ },
+ {
+  "key": "ui.035",
+  "en": "{0} / {1} selected",
+  "ko": "{0} / {1} 선택",
+  "ja": "{0} / {1} 選択",
+  "zh": "已选 {0} / {1}",
+  "contexts": [
+   "VrcToVrmWindow.cs:357: EditorGUILayout.LabelField($\"{_o.Customs.Count} / {a.Candidates.Count} 선택\", EditorStyles.centeredGreyMiniLabel);"
+  ]
+ },
+ {
+  "key": "ui.036",
+  "en": "Gesture",
+  "ko": "제스처",
+  "ja": "ジェスチャー",
+  "zh": "手势",
+  "contexts": [
+   "VrcToVrmWindow.cs:370: GUILayout.Label(c.IsGesture ? \"제스처\" : \"토글\", _badge);"
+  ]
+ },
+ {
+  "key": "ui.037",
+  "en": "Toggle",
+  "ko": "토글",
+  "ja": "トグル",
+  "zh": "开关",
+  "contexts": [
+   "VrcToVrmWindow.cs:370: GUILayout.Label(c.IsGesture ? \"제스처\" : \"토글\", _badge);"
+  ]
+ },
+ {
+  "key": "ui.038",
+  "en": "Emotion: ",
+  "ko": "감정: ",
+  "ja": "感情: ",
+  "zh": "情绪: ",
+  "contexts": [
+   "VrcToVrmWindow.cs:372: if (asEmotion != null) GUILayout.Label(\"감정: \" + asEmotion, _badge);"
+  ]
+ },
+ {
+  "key": "ui.039",
+  "en": "Stop preview",
+  "ko": "미리보기 끄기",
+  "ja": "プレビューを終了",
+  "zh": "关闭预览",
+  "contexts": [
+   "VrcToVrmWindow.cs:407: var tip = CanPreview ? (active ? \"미리보기 끄기\" : \"씬에서 미리보기\") : \"씬에 배치한 아바타에서만 미리볼 수 있습니다\";"
+  ]
+ },
+ {
+  "key": "ui.040",
+  "en": "Preview in scene",
+  "ko": "씬에서 미리보기",
+  "ja": "シーンでプレビュー",
+  "zh": "在场景中预览",
+  "contexts": [
+   "VrcToVrmWindow.cs:407: var tip = CanPreview ? (active ? \"미리보기 끄기\" : \"씬에서 미리보기\") : \"씬에 배치한 아바타에서만 미리볼 수 있습니다\";"
+  ]
+ },
+ {
+  "key": "ui.041",
+  "en": "Preview is only available for avatars placed in the scene",
+  "ko": "씬에 배치한 아바타에서만 미리볼 수 있습니다",
+  "ja": "シーンに配置したアバターでのみプレビューできます",
+  "zh": "仅能预览放置在场景中的模型",
+  "contexts": [
+   "VrcToVrmWindow.cs:407: var tip = CanPreview ? (active ? \"미리보기 끄기\" : \"씬에서 미리보기\") : \"씬에 배치한 아바타에서만 미리볼 수 있습니다\";"
+  ]
+ },
+ {
+  "key": "ui.042",
+  "en": " and {0} more",
+  "ko": " 외 {0}개",
+  "ja": " ほか{0}個",
+  "zh": " 等另外 {0} 个",
+  "contexts": [
+   "VrcToVrmWindow.cs:426: var text = string.Join(\", \", shapes.Take(5).Select(s => $\"{s.ShapeName} {s.Weight:0}\")) + (shapes.Count > 5 ? $\" 외 {shapes.Count - 5}개\" : \"\");"
+  ]
+ },
+ {
+  "key": "ui.043",
+  "en": "Conversion formula",
+  "ko": "환산 공식",
+  "ja": "換算式",
+  "zh": "换算公式",
+  "contexts": [
+   "VrcToVrmWindow.cs:436: Section(\"환산 공식\", null);"
+  ]
+ },
+ {
+  "key": "ui.044",
+  "en": "stiffnessForce = base + pull × a + stiffness × b   (b: Advanced type only)\n",
+  "ko": "stiffnessForce = base + pull × a + stiffness × b   (b는 Advanced 타입만)\n",
+  "ja": "stiffnessForce = base + pull × a + stiffness × b   (b は Advanced タイプのみ)\n",
+  "zh": "stiffnessForce = base + pull × a + stiffness × b   (b 仅限 Advanced 类型)\n",
+  "contexts": [
+   "VrcToVrmWindow.cs:438: \"stiffnessForce = base + pull × a + stiffness × b   (b는 Advanced 타입만)\\n\" +"
+  ]
+ },
+ {
+  "key": "ui.045",
+  "en": "dragForce = lerp(drag@0, drag@1, spring) + immobile × m   (capped at max)\n",
+  "ko": "dragForce = lerp(drag@0, drag@1, spring) + immobile × m   (최대 max)\n",
+  "ja": "dragForce = lerp(drag@0, drag@1, spring) + immobile × m   (上限 max)\n",
+  "zh": "dragForce = lerp(drag@0, drag@1, spring) + immobile × m   (上限 max)\n",
+  "contexts": [
+   "VrcToVrmWindow.cs:439: \"dragForce = lerp(drag@0, drag@1, spring) + immobile × m   (최대 max)\\n\" +"
+  ]
+ },
+ {
+  "key": "ui.046",
+  "en": "At spring=0. Near 1, the swaying stops",
+  "ko": "spring=0일 때. 1에 가까우면 흔들림이 사라집니다",
+  "ja": "spring=0 のとき。1 に近いと揺れなくなります",
+  "zh": "spring=0 时。接近 1 时不再摆动",
+  "contexts": [
+   "VrcToVrmWindow.cs:445: s.DragAtSpring0 = EditorGUILayout.Slider(new GUIContent(\"drag@0\", \"spring=0일 때. 1에 가까우면 흔들림이 사라집니다\"), s.DragAtSpring0, 0, 1);"
+  ]
+ },
+ {
+  "key": "ui.047",
+  "en": "At spring=1",
+  "ko": "spring=1일 때",
+  "ja": "spring=1 のとき",
+  "zh": "spring=1 时",
+  "contexts": [
+   "VrcToVrmWindow.cs:446: s.DragAtSpring1 = EditorGUILayout.Slider(new GUIContent(\"drag@1\", \"spring=1일 때\"), s.DragAtSpring1, 0, 1);"
+  ]
+ },
+ {
+  "key": "ui.048",
+  "en": "Colliders / groups",
+  "ko": "콜라이더 / 그룹",
+  "ja": "コライダー / グループ",
+  "zh": "碰撞体 / 组",
+  "contexts": [
+   "VrcToVrmWindow.cs:451: Section(\"콜라이더 / 그룹\", null);"
+  ]
+ },
+ {
+  "key": "ui.049",
+  "en": "Max spheres per capsule",
+  "ko": "캡슐당 최대 구 개수",
+  "ja": "カプセルあたりの最大球数",
+  "zh": "每个胶囊最大球数",
+  "contexts": [
+   "VrcToVrmWindow.cs:452: s.MaxSpheresPerCapsule = EditorGUILayout.IntSlider(new GUIContent(\"캡슐당 최대 구 개수\", \"VRM 0.x는 구 콜라이더만 지원하므로 캡슐을 구 여러 개로 근사합니다\"), s.MaxSpheresPerCapsule, 2, 12);"
+  ]
+ },
+ {
+  "key": "ui.050",
+  "en": "VRM 0.x only supports sphere colliders, so capsules are approximated with several spheres",
+  "ko": "VRM 0.x는 구 콜라이더만 지원하므로 캡슐을 구 여러 개로 근사합니다",
+  "ja": "VRM 0.x は球コライダーのみ対応のため、カプセルを複数の球で近似します",
+  "zh": "VRM 0.x 仅支持球形碰撞体，因此用多个球近似胶囊",
+  "contexts": [
+   "VrcToVrmWindow.cs:452: s.MaxSpheresPerCapsule = EditorGUILayout.IntSlider(new GUIContent(\"캡슐당 최대 구 개수\", \"VRM 0.x는 구 콜라이더만 지원하므로 캡슐을 구 여러 개로 근사합니다\"), s.MaxSpheresPerCapsule, 2, 12);"
+  ]
+ },
+ {
+  "key": "ui.051",
+  "en": "Drop arm colliders on limited bones",
+  "ko": "제한 있는 본의 팔 콜라이더 제외",
+  "ja": "制限付きボーンの腕コライダーを除外",
+  "zh": "排除受限骨骼的手臂碰撞体",
+  "contexts": [
+   "VrcToVrmWindow.cs:453: s.DropArmCollidersOnLimited = EditorGUILayout.Toggle(new GUIContent(\"제한 있는 본의 팔 콜라이더 제외\", \"VRM 0.x는 회전 제한이 없어, 팔을 들면 머리카락이 팔에 걸려 같이 들립니다\"), s.DropArmCollidersOnLimited);"
+  ]
+ },
+ {
+  "key": "ui.052",
+  "en": "VRM 0.x has no rotation limits, so raising the arms makes hair catch on them and lift too",
+  "ko": "VRM 0.x는 회전 제한이 없어, 팔을 들면 머리카락이 팔에 걸려 같이 들립니다",
+  "ja": "VRM 0.x には回転制限がないため、腕を上げると髪が腕に引っかかって一緒に持ち上がります",
+  "zh": "VRM 0.x 没有旋转限制，抬手时头发会被手臂勾住一起抬起",
+  "contexts": [
+   "VrcToVrmWindow.cs:453: s.DropArmCollidersOnLimited = EditorGUILayout.Toggle(new GUIContent(\"제한 있는 본의 팔 콜라이더 제외\", \"VRM 0.x는 회전 제한이 없어, 팔을 들면 머리카락이 팔에 걸려 같이 들립니다\"), s.DropArmCollidersOnLimited);"
+  ]
+ },
+ {
+  "key": "ui.053",
+  "en": "Merge identical settings",
+  "ko": "같은 설정끼리 묶기",
+  "ja": "同じ設定をまとめる",
+  "zh": "合并相同设置",
+  "contexts": [
+   "VrcToVrmWindow.cs:454: s.MergeIdentical = EditorGUILayout.Toggle(new GUIContent(\"같은 설정끼리 묶기\", \"파라미터와 콜라이더가 같은 PhysBone을 VRMSpringBone 하나로 합칩니다\"), s.MergeIdentical);"
+  ]
+ },
+ {
+  "key": "ui.054",
+  "en": "Merges PhysBones with the same parameters and colliders into one VRMSpringBone",
+  "ko": "파라미터와 콜라이더가 같은 PhysBone을 VRMSpringBone 하나로 합칩니다",
+  "ja": "パラメーターとコライダーが同じ PhysBone を 1つの VRMSpringBone にまとめます",
+  "zh": "将参数和碰撞体相同的 PhysBone 合并为一个 VRMSpringBone",
+  "contexts": [
+   "VrcToVrmWindow.cs:454: s.MergeIdentical = EditorGUILayout.Toggle(new GUIContent(\"같은 설정끼리 묶기\", \"파라미터와 콜라이더가 같은 PhysBone을 VRMSpringBone 하나로 합칩니다\"), s.MergeIdentical);"
+  ]
+ },
+ {
+  "key": "ui.055",
+  "en": "Reset to defaults",
+  "ko": "기본값으로",
+  "ja": "初期値に戻す",
+  "zh": "恢复默认",
+  "contexts": [
+   "VrcToVrmWindow.cs:455: if (GUILayout.Button(\"기본값으로\", GUILayout.Width(90))) _o.Spring = new SpringConversionSettings();"
+  ]
+ },
+ {
+  "key": "ui.056",
+  "en": "Preview ({0} PhysBones)",
+  "ko": "미리보기 (PhysBone {0}개)",
+  "ja": "プレビュー (PhysBone {0}個)",
+  "zh": "预览 (PhysBone {0} 个)",
+  "contexts": [
+   "VrcToVrmWindow.cs:457: Section($\"미리보기 (PhysBone {_physBones.Count}개)\", \"회색은 비활성이라 변환하지 않는 PhysBone입니다.\");"
+  ]
+ },
+ {
+  "key": "ui.057",
+  "en": "Grayed-out PhysBones are inactive and won't be converted.",
+  "ko": "회색은 비활성이라 변환하지 않는 PhysBone입니다.",
+  "ja": "グレーの PhysBone は無効のため変換されません。",
+  "zh": "灰色的 PhysBone 未启用，不会被转换。",
+  "contexts": [
+   "VrcToVrmWindow.cs:457: Section($\"미리보기 (PhysBone {_physBones.Count}개)\", \"회색은 비활성이라 변환하지 않는 PhysBone입니다.\");"
+  ]
+ },
+ {
+  "key": "ui.058",
+  "en": "Avatar info",
+  "ko": "아바타 정보",
+  "ja": "アバター情報",
+  "zh": "模型信息",
+  "contexts": [
+   "VrcToVrmWindow.cs:488: Section(\"아바타 정보\", null);"
+  ]
+ },
+ {
+  "key": "ui.059",
+  "en": "Author",
+  "ko": "제작자",
+  "ja": "作者",
+  "zh": "作者",
+  "contexts": [
+   "VrcToVrmWindow.cs:493: Section(\"제작자\", null);"
+  ]
+ },
+ {
+  "key": "ui.061",
+  "en": "Usage terms",
+  "ko": "이용 조건",
+  "ja": "利用条件",
+  "zh": "使用条款",
+  "contexts": [
+   "VrcToVrmWindow.cs:502: Section(\"이용 조건\", \"아바타·의상 제작자의 이용 약관을 확인하고 맞게 설정하세요. 기본값은 가장 제한적인 설정입니다.\");"
+  ]
+ },
+ {
+  "key": "ui.062",
+  "en": "Check the terms of use of the avatar and outfit creators and set these to match. The defaults are the most restrictive.",
+  "ko": "아바타·의상 제작자의 이용 약관을 확인하고 맞게 설정하세요. 기본값은 가장 제한적인 설정입니다.",
+  "ja": "アバター・衣装の制作者の利用規約を確認し、それに合わせて設定してください。初期値は最も制限の厳しい設定です。",
+  "zh": "请确认模型·服装作者的使用条款并据此设置。默认值为最严格的设置。",
+  "contexts": [
+   "VrcToVrmWindow.cs:502: Section(\"이용 조건\", \"아바타·의상 제작자의 이용 약관을 확인하고 맞게 설정하세요. 기본값은 가장 제한적인 설정입니다.\");"
+  ]
+ },
+ {
+  "key": "ui.063",
+  "en": "Allowed user",
+  "ko": "아바타 사용 허가",
+  "ja": "アバターの使用許可",
+  "zh": "使用许可",
+  "contexts": [
+   "VrcToVrmWindow.cs:503: _o.AllowedUser = (AllowedUser)EditorGUILayout.EnumPopup(\"아바타 사용 허가\", _o.AllowedUser);"
+  ]
+ },
+ {
+  "key": "ui.064",
+  "en": "Violent usage",
+  "ko": "폭력 표현",
+  "ja": "暴力表現",
+  "zh": "暴力表现",
+  "contexts": [
+   "VrcToVrmWindow.cs:504: _o.ViolentUssage = (UssageLicense)EditorGUILayout.EnumPopup(\"폭력 표현\", _o.ViolentUssage);"
+  ]
+ },
+ {
+  "key": "ui.065",
+  "en": "Sexual usage",
+  "ko": "성적 표현",
+  "ja": "性的表現",
+  "zh": "性表现",
+  "contexts": [
+   "VrcToVrmWindow.cs:505: _o.SexualUssage = (UssageLicense)EditorGUILayout.EnumPopup(\"성적 표현\", _o.SexualUssage);"
+  ]
+ },
+ {
+  "key": "ui.066",
+  "en": "Commercial usage",
+  "ko": "상업적 이용",
+  "ja": "商用利用",
+  "zh": "商业用途",
+  "contexts": [
+   "VrcToVrmWindow.cs:506: _o.CommercialUssage = (UssageLicense)EditorGUILayout.EnumPopup(\"상업적 이용\", _o.CommercialUssage);"
+  ]
+ },
+ {
+  "key": "ui.067",
+  "en": "Other permission URL",
+  "ko": "기타 허가 URL",
+  "ja": "その他の許諾 URL",
+  "zh": "其他许可 URL",
+  "contexts": [
+   "VrcToVrmWindow.cs:507: _o.OtherPermissionUrl = EditorGUILayout.TextField(\"기타 허가 URL\", _o.OtherPermissionUrl);"
+  ]
+ },
+ {
+  "key": "ui.068",
+  "en": "Redistribution license",
+  "ko": "재배포 라이선스",
+  "ja": "再配布ライセンス",
+  "zh": "再分发许可",
+  "contexts": [
+   "VrcToVrmWindow.cs:508: _o.LicenseType = (LicenseType)EditorGUILayout.EnumPopup(\"재배포 라이선스\", _o.LicenseType);"
+  ]
+ },
+ {
+  "key": "ui.069",
+  "en": "License URL",
+  "ko": "라이선스 URL",
+  "ja": "ライセンス URL",
+  "zh": "许可 URL",
+  "contexts": [
+   "VrcToVrmWindow.cs:510: _o.OtherLicenseUrl = EditorGUILayout.TextField(\"라이선스 URL\", _o.OtherLicenseUrl);"
+  ]
+ },
+ {
+  "key": "ui.070",
+  "en": "Reuse author & usage terms next time",
+  "ko": "제작자·이용 조건을 다음에도 사용",
+  "ja": "作者・利用条件を次回も使用",
+  "zh": "下次沿用作者·使用条款",
+  "contexts": [
+   "VrcToVrmWindow.cs:513: _rememberMeta = EditorGUILayout.ToggleLeft(new GUIContent(\"제작자·이용 조건을 다음에도 사용\", \"Title/Version/Thumbnail을 뺀 값을 EditorPrefs에 저장합니다\"), _rememberMeta);"
+  ]
+ },
+ {
+  "key": "ui.071",
+  "en": "Saves everything except Title/Version/Thumbnail to EditorPrefs",
+  "ko": "Title/Version/Thumbnail을 뺀 값을 EditorPrefs에 저장합니다",
+  "ja": "Title/Version/Thumbnail 以外の値を EditorPrefs に保存します",
+  "zh": "将 Title/Version/Thumbnail 以外的值保存到 EditorPrefs",
+  "contexts": [
+   "VrcToVrmWindow.cs:513: _rememberMeta = EditorGUILayout.ToggleLeft(new GUIContent(\"제작자·이용 조건을 다음에도 사용\", \"Title/Version/Thumbnail을 뺀 값을 EditorPrefs에 저장합니다\"), _rememberMeta);"
+  ]
+ },
+ {
+  "key": "ui.072",
+  "en": "Output",
+  "ko": "출력",
+  "ja": "出力",
+  "zh": "输出",
+  "contexts": [
+   "VrcToVrmWindow.cs:552: Section(\"출력\", null);"
+  ]
+ },
+ {
+  "key": "ui.073",
+  "en": "Output folder",
+  "ko": "출력 폴더",
+  "ja": "出力フォルダー",
+  "zh": "输出文件夹",
+  "contexts": [
+   "VrcToVrmWindow.cs:555: _o.OutputFolder = EditorGUILayout.TextField(\"출력 폴더\", _o.OutputFolder);",
+   "VrcToVrmWindow.cs:558: var abs = EditorUtility.OpenFolderPanel(\"출력 폴더\", _o.OutputFolder, \"\");"
+  ]
+ },
+ {
+  "key": "ui.074",
+  "en": "The output folder must be inside the project's Assets.",
+  "ko": "출력 폴더는 프로젝트의 Assets 안이어야 합니다.",
+  "ja": "出力フォルダーはプロジェクトの Assets 内である必要があります。",
+  "zh": "输出文件夹必须位于项目的 Assets 内。",
+  "contexts": [
+   "VrcToVrmWindow.cs:564: else EditorUtility.DisplayDialog(\"VRC → VRM\", \"출력 폴더는 프로젝트의 Assets 안이어야 합니다.\", \"확인\");"
+  ]
+ },
+ {
+  "key": "ui.075",
+  "en": "OK",
+  "ko": "확인",
+  "ja": "OK",
+  "zh": "确定",
+  "contexts": [
+   "VrcToVrmWindow.cs:564: else EditorUtility.DisplayDialog(\"VRC → VRM\", \"출력 폴더는 프로젝트의 Assets 안이어야 합니다.\", \"확인\");"
+  ]
+ },
+ {
+  "key": "ui.076",
+  "en": "<name>",
+  "ko": "<이름>",
+  "ja": "<名前>",
+  "zh": "<名称>",
+  "contexts": [
+   "VrcToVrmWindow.cs:568: EditorGUILayout.LabelField(\" \", $\"→ {_o.OutputFolder.TrimEnd('/')}/{(_source ? LilToonToMToon.Sanitize(_source.name) : \"<이름>\")}/\", EditorStyles.miniLabel);"
+  ]
+ },
+ {
+  "key": "ui.077",
+  "en": "→ {0}/{1}/",
+  "ko": "→ {0}/{1}/",
+  "ja": "→ {0}/{1}/",
+  "zh": "→ {0}/{1}/",
+  "contexts": [
+   "VrcToVrmWindow.cs:568: EditorGUILayout.LabelField(\" \", $\"→ {_o.OutputFolder.TrimEnd('/')}/{(_source ? LilToonToMToon.Sanitize(_source.name) : \"<이름>\")}/\", EditorStyles.miniLabel);"
+  ]
+ },
+ {
+  "key": "ui.079",
+  "en": "Force T-Pose",
+  "ko": "T-Pose 강제",
+  "ja": "T-Pose を強制",
+  "zh": "强制 T-Pose",
+  "contexts": [
+   "VrcToVrmWindow.cs:571: _o.ForceTPose = EditorGUILayout.ToggleLeft(new GUIContent(\"T-Pose 강제\", \"VRM 규격은 T-Pose를 요구합니다\"), _o.ForceTPose);"
+  ]
+ },
+ {
+  "key": "ui.080",
+  "en": "The VRM spec requires a T-Pose",
+  "ko": "VRM 규격은 T-Pose를 요구합니다",
+  "ja": "VRM の仕様では T-Pose が必要です",
+  "zh": "VRM 规范要求 T-Pose",
+  "contexts": [
+   "VrcToVrmWindow.cs:571: _o.ForceTPose = EditorGUILayout.ToggleLeft(new GUIContent(\"T-Pose 강제\", \"VRM 규격은 T-Pose를 요구합니다\"), _o.ForceTPose);"
+  ]
+ },
+ {
+  "key": "ui.081",
+  "en": "Remove hidden objects",
+  "ko": "숨긴 오브젝트 제거",
+  "ja": "非表示オブジェクトを削除",
+  "zh": "移除隐藏对象",
+  "contexts": [
+   "VrcToVrmWindow.cs:572: _o.RemoveInactive = EditorGUILayout.ToggleLeft(new GUIContent(\"숨긴 오브젝트 제거\", \"꺼진 옷·소품과 그것만 움직이는 흔들림 본을 VRM에서 뺍니다\"), _o.RemoveInactive);"
+  ]
+ },
+ {
+  "key": "ui.082",
+  "en": "Removes disabled clothes/props, and spring bones that only move them, from the VRM",
+  "ko": "꺼진 옷·소품과 그것만 움직이는 흔들림 본을 VRM에서 뺍니다",
+  "ja": "オフになっている衣装・小物と、それだけを動かす揺れものを VRM から除外します",
+  "zh": "从 VRM 中移除已关闭的服装·配件以及仅驱动它们的动骨",
+  "contexts": [
+   "VrcToVrmWindow.cs:572: _o.RemoveInactive = EditorGUILayout.ToggleLeft(new GUIContent(\"숨긴 오브젝트 제거\", \"꺼진 옷·소품과 그것만 움직이는 흔들림 본을 VRM에서 뺍니다\"), _o.RemoveInactive);"
+  ]
+ },
+ {
+  "key": "ui.083",
+  "en": "Remove unused blendshapes (recommended)",
+  "ko": "미사용 블렌드쉐이프 제거 (권장)",
+  "ja": "未使用シェイプキーを削除 (推奨)",
+  "zh": "移除未使用的形态键 (推荐)",
+  "contexts": [
+   "VrcToVrmWindow.cs:573: _o.ReduceBlendshape = EditorGUILayout.ToggleLeft(new GUIContent(\"미사용 블렌드쉐이프 제거 (권장)\", \"표정에 쓰지 않는 블렌드쉐이프를 빼서 용량을 크게 줄입니다\"), _o.ReduceBlendshape);"
+  ]
+ },
+ {
+  "key": "ui.084",
+  "en": "Removes blendshapes not used by expressions to greatly reduce file size",
+  "ko": "표정에 쓰지 않는 블렌드쉐이프를 빼서 용량을 크게 줄입니다",
+  "ja": "表情に使わないシェイプキーを削除し、容量を大きく減らします",
+  "zh": "移除表情未使用的形态键，大幅减小文件大小",
+  "contexts": [
+   "VrcToVrmWindow.cs:573: _o.ReduceBlendshape = EditorGUILayout.ToggleLeft(new GUIContent(\"미사용 블렌드쉐이프 제거 (권장)\", \"표정에 쓰지 않는 블렌드쉐이프를 빼서 용량을 크게 줄입니다\"), _o.ReduceBlendshape);"
+  ]
+ },
+ {
+  "key": "ui.085",
+  "en": "Stores blendshapes compressed (readable by UniVRM 0.54 or later)",
+  "ko": "블렌드쉐이프를 압축 저장합니다 (UniVRM 0.54 이상에서 읽기 가능)",
+  "ja": "シェイプキーを圧縮して保存します (UniVRM 0.54 以降で読み込み可能)",
+  "zh": "压缩保存形态键 (UniVRM 0.54 及以上可读取)",
+  "contexts": [
+   "VrcToVrmWindow.cs:574: _o.UseSparseAccessor = EditorGUILayout.ToggleLeft(new GUIContent(\"Sparse Accessor\", \"블렌드쉐이프를 압축 저장합니다 (UniVRM 0.54 이상에서 읽기 가능)\"), _o.UseSparseAccessor);"
+  ]
+ },
+ {
+  "key": "ui.087",
+  "en": "Bake lilToon textures",
+  "ko": "lilToon 텍스처 베이크",
+  "ja": "lilToon テクスチャをベイク",
+  "zh": "烘焙 lilToon 贴图",
+  "contexts": [
+   "VrcToVrmWindow.cs:577: _o.BakeTextures = EditorGUILayout.ToggleLeft(new GUIContent(\"lilToon 텍스처 베이크\", \"2nd/3rd 레이어, 색조 보정, 그림자 마스크를 텍스처로 굽습니다. 알파 마스크는 꺼도 항상 굽습니다(안 하면 투명 부분이 불투명해짐)\"), _o.BakeTextures);"
+  ]
+ },
+ {
+  "key": "ui.088",
+  "en": "Bakes 2nd/3rd layers, color correction and shadow masks into textures. The alpha mask is always baked even when off (otherwise transparent areas become opaque)",
+  "ko": "2nd/3rd 레이어, 색조 보정, 그림자 마스크를 텍스처로 굽습니다. 알파 마스크는 꺼도 항상 굽습니다(안 하면 투명 부분이 불투명해짐)",
+  "ja": "2nd/3rd レイヤー、色調補正、影マスクをテクスチャにベイクします。アルファマスクはオフでも常にベイクします (しないと透明部分が不透明になるため)",
+  "zh": "将 2nd/3rd 图层、色调校正、阴影遮罩烘焙到贴图。即使关闭也始终烘焙 Alpha 遮罩 (否则透明部分会变为不透明)",
+  "contexts": [
+   "VrcToVrmWindow.cs:577: _o.BakeTextures = EditorGUILayout.ToggleLeft(new GUIContent(\"lilToon 텍스처 베이크\", \"2nd/3rd 레이어, 색조 보정, 그림자 마스크를 텍스처로 굽습니다. 알파 마스크는 꺼도 항상 굽습니다(안 하면 투명 부분이 불투명해짐)\"), _o.BakeTextures);"
+  ]
+ },
+ {
+  "key": "ui.090",
+  "en": "Keep working copy in scene",
+  "ko": "작업용 복제본을 씬에 남기기",
+  "ja": "作業用コピーをシーンに残す",
+  "zh": "在场景中保留工作副本",
+  "contexts": [
+   "VrcToVrmWindow.cs:580: _o.KeepWorkingCopy = EditorGUILayout.ToggleLeft(new GUIContent(\"작업용 복제본을 씬에 남기기\", \"변환 직후 상태를 씬에서 확인할 때 사용\"), _o.KeepWorkingCopy);"
+  ]
+ },
+ {
+  "key": "ui.091",
+  "en": "Use to inspect the state right after conversion in the scene",
+  "ko": "변환 직후 상태를 씬에서 확인할 때 사용",
+  "ja": "変換直後の状態をシーンで確認するときに使用",
+  "zh": "用于在场景中查看转换后的状态",
+  "contexts": [
+   "VrcToVrmWindow.cs:580: _o.KeepWorkingCopy = EditorGUILayout.ToggleLeft(new GUIContent(\"작업용 복제본을 씬에 남기기\", \"변환 직후 상태를 씬에서 확인할 때 사용\"), _o.KeepWorkingCopy);"
+  ]
+ },
+ {
+  "key": "ui.092",
+  "en": "Not converted yet. Use the button below to convert.",
+  "ko": "아직 변환하지 않았습니다. 아래 버튼으로 변환하세요.",
+  "ja": "まだ変換していません。下のボタンで変換してください。",
+  "zh": "尚未转换。请用下方按钮进行转换。",
+  "contexts": [
+   "VrcToVrmWindow.cs:589: EditorGUILayout.HelpBox(\"아직 변환하지 않았습니다. 아래 버튼으로 변환하세요.\", MessageType.None);"
+  ]
+ },
+ {
+  "key": "ui.094",
+  "en": "Conversion failed. Check the log below.",
+  "ko": "변환에 실패했습니다. 아래 로그를 확인하세요.",
+  "ja": "変換に失敗しました。下のログを確認してください。",
+  "zh": "转换失败。请查看下方日志。",
+  "contexts": [
+   "VrcToVrmWindow.cs:592: EditorGUILayout.HelpBox(_result.Success ? $\"내보내기 완료\\n{_result.VrmPath}\" : \"변환에 실패했습니다. 아래 로그를 확인하세요.\","
+  ]
+ },
+ {
+  "key": "ui.095",
+  "en": "Select VRM",
+  "ko": "VRM 선택",
+  "ja": "VRM を選択",
+  "zh": "选择 VRM",
+  "contexts": [
+   "VrcToVrmWindow.cs:599: if (GUILayout.Button(\"VRM 선택\")) Ping(_result.VrmPath);"
+  ]
+ },
+ {
+  "key": "ui.096",
+  "en": "Select editable prefab (advanced)",
+  "ko": "편집용 프리팹 선택 (고급)",
+  "ja": "編集用プレハブを選択 (上級)",
+  "zh": "选择编辑用预制件 (高级)",
+  "contexts": [
+   "result screen button: selects the prefab users can tweak in Unity and re-export with UniVRM (for advanced users)"
+  ]
+ },
+ {
+  "key": "ui.097",
+  "en": "After tweaking, you can re-export it from the UniVRM menu (VRM0 > Export)",
+  "ko": "손본 뒤 UniVRM 메뉴(VRM0 > Export)로 다시 내보낼 수 있습니다",
+  "ja": "手直し後、UniVRM メニュー (VRM0 > Export) から再エクスポートできます",
+  "zh": "修改后可通过 UniVRM 菜单 (VRM0 > Export) 重新导出",
+  "contexts": [
+   "VrcToVrmWindow.cs:600: if (GUILayout.Button(new GUIContent(\"Setup 프리팹 선택\", \"손본 뒤 UniVRM 메뉴(VRM0 > Export)로 다시 내보낼 수 있습니다\"))) Ping(_result.PrefabPath);"
+  ]
+ },
+ {
+  "key": "ui.098",
+  "en": "Open folder",
+  "ko": "폴더 열기",
+  "ja": "フォルダーを開く",
+  "zh": "打开文件夹",
+  "contexts": [
+   "VrcToVrmWindow.cs:601: if (GUILayout.Button(\"폴더 열기\")) EditorUtility.RevealInFinder(_result.VrmPath);"
+  ]
+ },
+ {
+  "key": "ui.099",
+  "en": "Copy log",
+  "ko": "로그 복사",
+  "ja": "ログをコピー",
+  "zh": "复制日志",
+  "contexts": [
+   "VrcToVrmWindow.cs:603: if (GUILayout.Button(\"로그 복사\")) EditorGUIUtility.systemCopyBuffer = string.Join(\"\\n\", _result.Log);"
+  ]
+ },
+ {
+  "key": "ui.103",
+  "en": "The output folder must be inside Assets.",
+  "ko": "출력 폴더는 Assets 안이어야 합니다.",
+  "ja": "出力フォルダーは Assets 内である必要があります。",
+  "zh": "输出文件夹必须位于 Assets 内。",
+  "contexts": [
+   "VrcToVrmWindow.cs:651: if (string.IsNullOrWhiteSpace(_o.OutputFolder) || !_o.OutputFolder.StartsWith(\"Assets\")) problems.Add(\"출력 폴더는 Assets 안이어야 합니다.\");"
+  ]
+ },
+ {
+  "key": "ui.104",
+  "en": "Convert & export to VRM 0.x",
+  "ko": "VRM 0.x로 변환 및 내보내기",
+  "ja": "VRM 0.x に変換してエクスポート",
+  "zh": "转换并导出为 VRM 0.x",
+  "contexts": [
+   "VrcToVrmWindow.cs:663: if (GUILayout.Button($\"VRM 0.x로 변환 및 내보내기\", GUILayout.Height(30)))"
+  ]
+ },
+ {
+  "key": "ui.105",
+  "en": "Converting {0}…",
+  "ko": "{0} 변환 중…",
+  "ja": "{0} を変換中…",
+  "zh": "正在转换 {0}…",
+  "contexts": [
+   "VrcToVrmWindow.cs:675: EditorUtility.DisplayProgressBar(\"VRC → VRM\", $\"{_source.name} 변환 중…\", 0.5f);"
+  ]
+ },
+ {
+  "key": "ui.none",
+  "en": "(None)",
+  "ko": "(없음)",
+  "ja": "(なし)",
+  "zh": "(无)",
+  "contexts": [
+   "SearchableDropdown.cs: label of the 'nothing selected' entry in dropdowns"
+  ]
+ },
+ {
+  "key": "ui.tab.expression",
+  "en": "Expressions",
+  "ko": "표정",
+  "ja": "表情",
+  "zh": "表情",
+  "contexts": [
+   "window tab: facial expressions (blendshapes)"
+  ]
+ },
+ {
+  "key": "ui.tab.meta",
+  "en": "Meta",
+  "ko": "메타",
+  "ja": "メタ",
+  "zh": "元数据",
+  "contexts": [
+   "window tab: VRM meta / license"
+  ]
+ },
+ {
+  "key": "ui.tab.options",
+  "en": "Options",
+  "ko": "옵션",
+  "ja": "オプション",
+  "zh": "选项",
+  "contexts": [
+   "window tab: options"
+  ]
+ },
+ {
+  "key": "ui.tab.result",
+  "en": "Result",
+  "ko": "결과",
+  "ja": "結果",
+  "zh": "结果",
+  "contexts": [
+   "window tab: conversion result / log"
+  ]
+ },
+ {
+  "key": "ui.tab.spring",
+  "en": "Spring bones",
+  "ko": "흔들림",
+  "ja": "揺れもの",
+  "zh": "动骨",
+  "contexts": [
+   "window tab: swaying bones (PhysBone -> SpringBone)"
+  ]
+ },
+ {
+  "key": "ux.advanced",
+  "en": "Advanced settings",
+  "ko": "고급 설정",
+  "ja": "詳細設定",
+  "zh": "高级设置",
+  "contexts": [
+   "foldout label for advanced settings"
+  ]
+ },
+ {
+  "key": "ux.allowed.everyone",
+  "en": "Everyone",
+  "ko": "누구나",
+  "ja": "誰でも",
+  "zh": "所有人",
+  "contexts": [
+   "license option: everyone"
+  ]
+ },
+ {
+  "key": "ux.allowed.licensed",
+  "en": "Licensed people only",
+  "ko": "허락받은 사람만",
+  "ja": "許可された人のみ",
+  "zh": "仅限获许可者",
+  "contexts": [
+   "license option: only explicitly licensed persons"
+  ]
+ },
+ {
+  "key": "ux.allowed.onlyAuthor",
+  "en": "Author only",
+  "ko": "본인만",
+  "ja": "作者のみ",
+  "zh": "仅限作者",
+  "contexts": [
+   "license option: only the author may use the avatar"
+  ]
+ },
+ {
+  "key": "ux.author",
+  "en": "Author (required)",
+  "ko": "Author (필수)",
+  "ja": "Author (必須)",
+  "zh": "Author (必填)",
+  "contexts": [
+   "label of the required author field"
+  ]
+ },
+ {
+  "key": "ux.chip.blinkMissing",
+  "en": "Blink not found. Please pick Blink in the Expressions tab.",
+  "ko": "눈 깜빡임을 찾지 못했습니다. 표정 탭에서 Blink를 골라 주세요.",
+  "ja": "まばたきが見つかりませんでした。表情タブで Blink を選んでください。",
+  "zh": "未找到眨眼。请在表情标签页中选择 Blink。",
+  "contexts": [
+   "status chip tooltip"
+  ]
+ },
+ {
+  "key": "ux.chip.expressions",
+  "en": "Number of expression animations found in FX controller '{0}'. Click to go to the Expressions tab.",
+  "ko": "FX 컨트롤러 '{0}'에서 찾은 표정 애니메이션 수. 클릭하면 표정 탭으로 이동합니다.",
+  "ja": "FX コントローラー '{0}' で見つかった表情アニメーションの数。クリックすると表情タブに移動します。",
+  "zh": "在 FX 控制器 '{0}' 中找到的表情动画数量。点击跳转到表情标签页。",
+  "contexts": [
+   "status chip tooltip"
+  ]
+ },
+ {
+  "key": "ux.chip.legend",
+  "en": "✓ found · ⚠ needs review · gray shows counts. Click a chip to go to its tab; hover for details.",
+  "ko": "✓ 찾음 · ⚠ 확인 필요 · 회색은 개수 정보입니다. 칩을 누르면 해당 탭으로 이동하고, 마우스를 올리면 설명이 보입니다.",
+  "ja": "✓ 検出 · ⚠ 要確認 · グレーは個数の情報です。チップを押すと該当タブに移動し、マウスを乗せると説明が表示されます。",
+  "zh": "✓ 已找到 · ⚠ 需确认 · 灰色为数量信息。点击标签可跳转到对应标签页，鼠标悬停可查看说明。",
+  "contexts": [
+   "one-line legend under the status chips"
+  ]
+ },
+ {
+  "key": "ux.chip.lipsync",
+  "en": "Lip sync source: {0}",
+  "ko": "립싱크 출처: {0}",
+  "ja": "リップシンクの取得元: {0}",
+  "zh": "口型同步来源: {0}",
+  "contexts": [
+   "status chip tooltip"
+  ]
+ },
+ {
+  "key": "ux.chip.meshes",
+  "en": "Meshes {0}",
+  "ko": "메시 {0}",
+  "ja": "メッシュ {0}",
+  "zh": "网格 {0}",
+  "contexts": [
+   "status chip label: number of meshes"
+  ]
+ },
+ {
+  "key": "ux.chip.meshesAllTip",
+  "en": "All meshes go into the VRM.",
+  "ko": "모든 메시가 VRM에 들어갑니다.",
+  "ja": "すべてのメッシュが VRM に入ります。",
+  "zh": "所有网格都会放入 VRM。",
+  "contexts": [
+   "status chip tooltip"
+  ]
+ },
+ {
+  "key": "ux.chip.meshesHidden",
+  "en": "Meshes {0} ({1} hidden)",
+  "ko": "메시 {0} (숨김 {1})",
+  "ja": "メッシュ {0} (非表示 {1})",
+  "zh": "网格 {0} (隐藏 {1})",
+  "contexts": [
+   "status chip label: visible meshes and hidden meshes"
+  ]
+ },
+ {
+  "key": "ux.chip.meshesTip",
+  "en": "{0} turned-off meshes (spare outfits, etc.) are left out of the VRM. It converts exactly as it looks now.",
+  "ko": "꺼져 있는 메시 {0}개(갈아입기용 옷 등)는 VRM에서 빠집니다. 지금 보이는 모습 그대로 변환됩니다.",
+  "ja": "オフになっているメッシュ {0}個 (着替え用の衣装など) は VRM から外れます。今見えている姿のまま変換されます。",
+  "zh": "{0} 个已关闭的网格 (换装用服装等) 不会放入 VRM。将按当前看到的样子转换。",
+  "contexts": [
+   "status chip tooltip"
+  ]
+ },
+ {
+  "key": "ux.chip.spring",
+  "en": "Spring bones {0}",
+  "ko": "흔들림 본 {0}",
+  "ja": "揺れもの {0}",
+  "zh": "动骨 {0}",
+  "contexts": [
+   "status chip label (count of PhysBones = swaying bones)"
+  ]
+ },
+ {
+  "key": "ux.chip.springTip",
+  "en": "Converts {0} PhysBones ({1} colliders) into VRM spring bones. Click to go to the Spring bones tab.",
+  "ko": "PhysBone {0}개(콜라이더 {1}개)를 VRM 흔들림 본으로 변환합니다. 클릭하면 흔들림 탭으로 이동합니다.",
+  "ja": "PhysBone {0}個 (コライダー {1}個) を VRM の揺れものに変換します。クリックすると揺れものタブに移動します。",
+  "zh": "将 {0} 个 PhysBone (碰撞体 {1} 个) 转换为 VRM 动骨。点击跳转到动骨标签页。",
+  "contexts": [
+   "status chip tooltip"
+  ]
+ },
+ {
+  "key": "ux.expr.customHint",
+  "en": "Checked animations are also added as VRM custom expressions. Ones already used as emotions (Joy, etc.) are off by default, and you can leave them that way.",
+  "ko": "체크한 애니메이션은 VRM 커스텀 표정으로도 들어갑니다. 감정(Joy 등)에 이미 쓰인 것은 기본으로 꺼져 있으며, 그대로 두어도 됩니다.",
+  "ja": "チェックしたアニメーションは VRM のカスタム表情にも追加されます。感情 (Joy など) に使われているものは最初からオフになっており、そのままで大丈夫です。",
+  "zh": "勾选的动画也会作为 VRM 自定义表情加入。已用于情绪 (Joy 等) 的默认不勾选，保持原样即可。",
+  "contexts": [
+   "help text of the custom expressions section"
+  ]
+ },
+ {
+  "key": "ux.expr.emptyEmotion",
+  "en": "If left empty, this emotion expression won't exist. It's optional.",
+  "ko": "비워 두면 이 감정 표정은 없습니다. 선택 사항입니다.",
+  "ja": "空のままにすると、この感情表情はなしになります。設定は任意です。",
+  "zh": "留空则没有此情绪表情。此项为可选。",
+  "contexts": [
+   "hint under an emotion dropdown that is set to (None)"
+  ]
+ },
+ {
+  "key": "ux.expr.showDetails",
+  "en": "Show blendshape details",
+  "ko": "블렌드쉐이프 자세히 보기",
+  "ja": "シェイプキーの詳細を表示",
+  "zh": "显示形态键详情",
+  "contexts": [
+   "toggle that shows/hides the raw blendshape lists"
+  ]
+ },
+ {
+  "key": "ux.expr.usedAsEmotionTip",
+  "en": "Already used as an emotion expression, so it's off by default.",
+  "ko": "이미 감정 표정으로 쓰이고 있어 기본으로 꺼져 있습니다.",
+  "ja": "すでに感情表情として使われているため、最初からオフになっています。",
+  "zh": "已用作情绪表情，因此默认不勾选。",
+  "contexts": [
+   "tooltip of the 'Emotion: Joy' badge"
+  ]
+ },
+ {
+  "key": "ux.footer.again",
+  "en": "Export again (overwrite existing file)",
+  "ko": "다시 내보내기 (기존 파일 덮어쓰기)",
+  "ja": "再エクスポート (既存ファイルを上書き)",
+  "zh": "重新导出 (覆盖现有文件)",
+  "contexts": [
+   "convert button label after a successful export"
+  ]
+ },
+ {
+  "key": "ux.footer.authorAbove",
+  "en": "Enter a name in Author above to enable the Convert button.",
+  "ko": "위의 Author에 이름을 입력하면 변환 버튼이 켜집니다.",
+  "ja": "上の Author に名前を入力すると変換ボタンが押せるようになります。",
+  "zh": "在上方 Author 中输入名称后即可使用转换按钮。",
+  "contexts": [
+   "footer hint shown on the Meta tab when Author is empty"
+  ]
+ },
+ {
+  "key": "ux.footer.authorNeeded",
+  "en": "Enter a name to enable the Convert button.",
+  "ko": "이름을 입력하면 변환 버튼이 켜집니다.",
+  "ja": "名前を入力すると変換ボタンが押せるようになります。",
+  "zh": "输入名称后即可使用转换按钮。",
+  "contexts": [
+   "hint under the Author field in the footer when it is empty"
+  ]
+ },
+ {
+  "key": "ux.footer.vrm0",
+  "en": "Creates a VRM 0.x file that opens in most VRM apps, such as VSeeFace, Warudo and VMagicMirror.",
+  "ko": "VSeeFace, Warudo, VMagicMirror 등 대부분의 VRM 앱에서 열 수 있는 VRM 0.x 파일을 만듭니다.",
+  "ja": "VSeeFace、Warudo、VMagicMirror など、ほとんどの VRM アプリで開ける VRM 0.x ファイルを作ります。",
+  "zh": "生成可在 VSeeFace、Warudo、VMagicMirror 等大多数 VRM 应用中打开的 VRM 0.x 文件。",
+  "contexts": [
+   "caption under the convert button explaining the VRM version"
+  ]
+ },
+ {
+  "key": "ux.license.other",
+  "en": "Other (by URL)",
+  "ko": "기타 (URL로 지정)",
+  "ja": "その他 (URL で指定)",
+  "zh": "其他 (通过 URL 指定)",
+  "contexts": [
+   "license option: other license given by URL"
+  ]
+ },
+ {
+  "key": "ux.license.prohibited",
+  "en": "No redistribution",
+  "ko": "재배포 금지",
+  "ja": "再配布禁止",
+  "zh": "禁止再分发",
+  "contexts": [
+   "license option: redistribution prohibited"
+  ]
+ },
+ {
+  "key": "ux.meta.authorHelp",
+  "en": "Whoever made this VRM file, usually your own name. Put the original avatar/outfit creators and the store page (BOOTH, etc.) in Reference.",
+  "ko": "이 VRM 파일을 만든 사람, 보통은 본인 이름을 적습니다. 원본 아바타·의상 제작자와 판매 페이지(BOOTH 등)는 Reference에 적으세요.",
+  "ja": "この VRM ファイルを作った人、ふつうは自分の名前を書きます。元のアバター・衣装の制作者と販売ページ (BOOTH など) は Reference に書いてください。",
+  "zh": "填写制作此 VRM 文件的人，通常是你自己的名字。原始模型·服装的作者和销售页面 (BOOTH 等) 请填在 Reference 中。",
+  "contexts": [
+   "help text under the Author field; target users bought avatars on BOOTH"
+  ]
+ },
+ {
+  "key": "ux.meta.optional",
+  "en": "Everything except Author is optional.",
+  "ko": "Author 말고는 모두 선택 사항입니다.",
+  "ja": "Author 以外はすべて任意です。",
+  "zh": "除 Author 外均为可选项。",
+  "contexts": [
+   "hint at the top of the meta tab"
+  ]
+ },
+ {
+  "key": "ux.meta.referenceTip",
+  "en": "Creator or store page URL of the original avatar/outfit",
+  "ko": "원본 아바타·의상의 제작자나 판매 페이지 URL",
+  "ja": "元のアバター・衣装の制作者または販売ページの URL",
+  "zh": "原始模型·服装的作者或销售页面 URL",
+  "contexts": [
+   "tooltip of the Reference field"
+  ]
+ },
+ {
+  "key": "ux.meta.termsNote",
+  "en": "These settings won't stop VRM apps from opening the file. They tell people who receive this VRM the terms of use, so choose them to match the store page's terms.",
+  "ko": "이 설정 때문에 VRM 앱이 파일을 못 여는 일은 없습니다. 이 VRM을 받는 사람에게 이용 조건을 알려 주는 정보이니, 판매 페이지의 이용 약관에 맞게 고르세요.",
+  "ja": "この設定のせいで VRM アプリがファイルを開けなくなることはありません。この VRM を受け取る人に利用条件を伝える情報なので、販売ページの利用規約に合わせて選んでください。",
+  "zh": "这些设置不会导致 VRM 应用无法打开文件。它们用于告知接收此 VRM 的人使用条款，请按销售页面的使用条款选择。",
+  "contexts": [
+   "note in the usage terms section"
+  ]
+ },
+ {
+  "key": "ux.options.optional",
+  "en": "This tab is optional. You can convert with the defaults.",
+  "ko": "이 탭은 선택 사항입니다. 기본값 그대로 변환해도 됩니다.",
+  "ja": "このタブは任意です。初期値のままで変換して大丈夫です。",
+  "zh": "此标签页为可选项。保持默认值转换即可。",
+  "contexts": [
+   "hint at the top of the options tab"
+  ]
+ },
+ {
+  "key": "ux.options.result",
+  "en": "Conversion",
+  "ko": "변환 방식",
+  "ja": "変換方法",
+  "zh": "转换方式",
+  "contexts": [
+   "section title in the options tab (pose / hidden objects / texture baking)"
+  ]
+ },
+ {
+  "key": "ux.preview.place",
+  "en": "Place in scene & preview",
+  "ko": "씬에 놓고 미리보기",
+  "ja": "シーンに置いてプレビュー",
+  "zh": "放入场景并预览",
+  "contexts": [
+   "small button: puts the prefab into the scene so expressions can be previewed"
+  ]
+ },
+ {
+  "key": "ux.preview.placeTip",
+  "en": "Places the selected prefab in the open scene and switches to that object. You can undo with Ctrl+Z.",
+  "ko": "선택한 프리팹을 지금 열린 씬에 배치하고 그 오브젝트로 전환합니다. Ctrl+Z로 되돌릴 수 있습니다.",
+  "ja": "選択したプレハブを今開いているシーンに配置し、そのオブジェクトに切り替えます。Ctrl+Z で元に戻せます。",
+  "zh": "将所选预制件放入当前打开的场景并切换到该对象。可用 Ctrl+Z 撤销。",
+  "contexts": [
+   "tooltip of the button above"
+  ]
+ },
+ {
+  "key": "ux.preview.prefab",
+  "en": "Preview only works on avatars placed in the scene.",
+  "ko": "미리보기는 씬에 놓인 아바타에서만 할 수 있습니다.",
+  "ja": "プレビューはシーンに置いたアバターでのみできます。",
+  "zh": "仅能预览放置在场景中的模型。",
+  "contexts": [
+   "fixed-height preview row, shown when a prefab asset is selected"
+  ]
+ },
+ {
+  "key": "ux.result.file",
+  "en": "{0} ({1:0.0} MB)",
+  "ko": "{0} ({1:0.0} MB)",
+  "ja": "{0} ({1:0.0} MB)",
+  "zh": "{0} ({1:0.0} MB)",
+  "contexts": [
+   "file name and size of the created VRM"
+  ]
+ },
+ {
+  "key": "ux.result.log",
+  "en": "Detailed log ({0} lines)",
+  "ko": "자세한 로그 ({0}줄)",
+  "ja": "詳細ログ ({0}行)",
+  "zh": "详细日志 ({0} 行)",
+  "contexts": [
+   "foldout label for the full log"
+  ]
+ },
+ {
+  "key": "ux.result.next",
+  "en": "Try loading this file into a VRM app like VSeeFace to check it.",
+  "ko": "VSeeFace 같은 VRM 앱에 이 파일을 불러와 확인해 보세요.",
+  "ja": "VSeeFace などの VRM アプリでこのファイルを読み込んで確認してみてください。",
+  "zh": "请将此文件导入 VSeeFace 等 VRM 应用中查看效果。",
+  "contexts": [
+   "hint under the result buttons"
+  ]
+ },
+ {
+  "key": "ux.result.notes",
+  "en": "{0} things that may look different from VRChat (most are fine as is)",
+  "ko": "VRChat과 다르게 보일 수 있는 점 {0}개 (대부분 그대로 써도 됩니다)",
+  "ja": "VRChat と違って見えるかもしれない点 {0}個 (ほとんどはそのままで大丈夫です)",
+  "zh": "{0} 处可能与 VRChat 中看起来不同 (大多可直接使用)",
+  "contexts": [
+   "foldout label listing differences from VRChat"
+  ]
+ },
+ {
+  "key": "ux.result.notesHint",
+  "en": "These features aren't in the VRM format, so they were changed or left out automatically. Nothing to do; refer to this if you're not happy with the result.",
+  "ko": "VRM 형식에 없는 기능이라 자동으로 바뀌거나 빠진 부분입니다. 따로 할 일은 없고, 결과가 마음에 들지 않을 때 참고하세요.",
+  "ja": "VRM 形式にない機能のため、自動で変更・除外された部分です。特に作業は不要で、結果が気に入らないときの参考にしてください。",
+  "zh": "这些是 VRM 格式不支持的功能，已自动更改或去除。无需额外操作，结果不满意时可作参考。",
+  "contexts": [
+   "hint inside the notes foldout"
+  ]
+ },
+ {
+  "key": "ux.result.ready",
+  "en": "Your VRM is ready",
+  "ko": "VRM이 완성되었습니다",
+  "ja": "VRM が完成しました",
+  "zh": "VRM 已完成",
+  "contexts": [
+   "big success title after conversion"
+  ]
+ },
+ {
+  "key": "ux.spring.intro",
+  "en": "Most avatars are fine with this tab as is. Check in a VRM app, and if hair or clothes are too stiff or bounce too much, adjust them under 'Advanced settings' below.",
+  "ko": "대부분의 아바타는 이 탭을 그대로 두어도 됩니다. VRM 앱에서 확인해 보고 머리카락이나 옷이 너무 뻣뻣하거나 지나치게 출렁이면 아래 '고급 설정'에서 조정하세요.",
+  "ja": "ほとんどのアバターはこのタブをそのままで大丈夫です。VRM アプリで確認し、髪や服が硬すぎたり揺れすぎたりする場合は、下の「詳細設定」で調整してください。",
+  "zh": "大多数模型无需修改此标签页。请在 VRM 应用中查看，如果头发或衣服太僵硬或晃动过大，请在下方“高级设置”中调整。",
+  "contexts": [
+   "info box at the top of the spring-bones tab"
+  ]
+ },
+ {
+  "key": "ux.spring.legend",
+  "en": "The left 3 columns are VRChat PhysBone values; →stiff/→drag/→grav are the stiffness, damping and gravity values used in VRM.",
+  "ko": "왼쪽 3열은 VRChat의 PhysBone 값, →stiff/→drag/→grav는 VRM에서 쓰일 뻣뻣함·감쇠·중력 값입니다.",
+  "ja": "左の 3列は VRChat の PhysBone の値、→stiff/→drag/→grav は VRM で使われる硬さ・減衰・重力の値です。",
+  "zh": "左侧 3 列为 VRChat 的 PhysBone 值，→stiff/→drag/→grav 为 VRM 中使用的硬度、阻尼、重力值。",
+  "contexts": [
+   "legend above the spring-bone preview table"
+  ]
+ },
+ {
+  "key": "ux.usage.allow",
+  "en": "Allow",
+  "ko": "허용",
+  "ja": "許可",
+  "zh": "允许",
+  "contexts": [
+   "license option: allowed"
+  ]
+ },
+ {
+  "key": "ux.usage.disallow",
+  "en": "Disallow",
+  "ko": "허용 안 함",
+  "ja": "許可しない",
+  "zh": "不允许",
+  "contexts": [
+   "license option: not allowed"
+  ]
+ }
+]

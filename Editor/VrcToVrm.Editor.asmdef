@@ -1,0 +1,24 @@
+{
+    "name": "VrcToVrm.Editor",
+    "rootNamespace": "VrcToVrm",
+    "references": [
+        "VRM",
+        "UniVRM.Editor",
+        "UniGLTF",
+        "UniGLTF.Utils",
+        "UniHumanoid",
+        "MToon",
+        "lilToon.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
