@@ -75,7 +75,7 @@ You usually don't need the tabs, but:
 - **Expressions**: which blendshapes and FX animations become which VRM expression. Place the avatar in the scene and you can preview each one with ▶.
 - **Spring bones**: what each PhysBone turns into, and the conversion coefficients under *Advanced settings*.
 - **Meta**: title, author and the usage terms stored in the VRM. Set them to match the terms of the avatar and outfit you bought.
-- **Options**: output folder, T-pose, removing hidden objects, texture baking.
+- **Options**: output folder, T-pose, removing hidden objects, texture baking, and whether to keep MatCap shine (see Known limitations).
 
 <p>
 <img src="Documentation~/images/window-spring.png" width="32%" alt="Spring bones tab">
@@ -121,7 +121,14 @@ I've only checked them in UniVRM and three-vrm, not in every VRM app. If somethi
 ## Known limitations
 
 - VRM 0.x has no PhysBone angle limits, curves or stretch, so some parts may swing more than in VRChat. For PhysBones that have angle limits, arm colliders are skipped by default so that raising an arm doesn't lift the hair along with it (Spring bones › Advanced settings).
-- MToon can't mask a matcap. A matcap that lilToon only applies to part of a material is dropped if it only covers a small area, otherwise it's spread over the whole material at its average strength.
+- MToon can't mask a matcap. A matcap that lilToon only applies to part of a material is dropped unless it covers most of it, in which case it's spread over the whole material at its average strength.
+- MToon draws matcap shine without lighting, so shiny parts (often hair) stay bright in dark scenes. If you'll use the avatar somewhere dark, turn off **Keep MatCap shine** in Options.
+- Lighting works a bit differently in MToon:
+  - Shadows cast by other parts (a hat brim on the hair, hair on the face) always show, even where lilToon was set not to receive them.
+  - Extra point and spot lights are weaker than in lilToon.
+  - lilToon keeps a minimum brightness in very dark worlds, while MToon lets the avatar go dark.
+  - Rim light can't be limited to the lit side, so it's spread evenly at a lower strength.
+- Glow (emission) that uses a second UV map, such as scrolling light strips, is left out. AudioLink glow stays at a fixed brightness.
 - Textures keep their full resolution, so avatars with lots of 4K textures end up large (60–80 MB isn't unusual). There's no option to shrink them yet.
 - Emotions are guessed from clip and blendshape names (`smile`, `angry`, `sad`, their Japanese equivalents and so on). If your avatar names its faces differently, pick them in the Expressions tab before exporting.
 

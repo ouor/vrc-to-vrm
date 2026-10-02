@@ -18,6 +18,7 @@ namespace VrcToVrm
         public bool ForceTPose = true;
         public bool RemoveInactive = true;
         public bool BakeTextures = true;
+        public bool KeepMatCap = true;
         public bool ReduceBlendshape = true;
         public bool UseSparseAccessor = true;
         public bool KeepWorkingCopy = false;
@@ -120,7 +121,7 @@ namespace VrcToVrm
 
             // 4. materials
             TrimMaterialSlots(copy, log);
-            var conv = new LilToonToMToon(folder + "/Textures", o.BakeTextures);
+            var conv = new LilToonToMToon(folder + "/Textures", o.BakeTextures, o.KeepMatCap);
             var saved = new Dictionary<Material, Material>();
             foreach (var r in copy.GetComponentsInChildren<Renderer>(true))
             {

@@ -403,6 +403,36 @@
   ]
  },
  {
+  "key": "mat.010",
+  "en": "[Material] {0}: Left out the glow (emission). It uses a second UV map or multiply blending, which MToon can't do.",
+  "ko": "[Material] {0}: 발광(이미션)을 뺐습니다. 두 번째 UV나 곱하기 합성을 쓰는데, MToon에서는 표현할 수 없습니다.",
+  "ja": "[Material] {0}: 発光 (エミッション) を外しました。2つ目のUVや乗算合成を使っていて、MToonでは表現できません。",
+  "zh": "[Material] {0}: 已去除发光 (自发光)。它使用了第二套 UV 或正片叠底混合，MToon 无法实现。",
+  "contexts": [
+   "conversion log line: a lilToon emission that uses UV1-3 (or multiply blend mode) was dropped because MToon only adds emission using the main UV"
+  ]
+ },
+ {
+  "key": "mat.011",
+  "en": "[Material] {0}: Left out the shine (MatCap) because \"Keep MatCap shine\" is off.",
+  "ko": "[Material] {0}: \"MatCap 광택 유지\"가 꺼져 있어 광택(MatCap)을 뺐습니다.",
+  "ja": "[Material] {0}: 「MatCap の光沢を残す」がオフのため、光沢 (MatCap) を外しました。",
+  "zh": "[Material] {0}: 由于“保留 MatCap 光泽”已关闭，已去除光泽 (MatCap)。",
+  "contexts": [
+   "conversion log line when MatCap was dropped because of the option"
+  ]
+ },
+ {
+  "key": "mat.012",
+  "en": "[Material] {0}: Baked the transparency from the 2nd/3rd layers into the main texture's alpha.",
+  "ko": "[Material] {0}: 2nd/3rd 레이어의 투명도를 메인 텍스처 알파에 베이크했습니다.",
+  "ja": "[Material] {0}: 2nd/3rd レイヤーの透明度をメインテクスチャのアルファにベイクしました。",
+  "zh": "[Material] {0}: 已将 2nd/3rd 图层的透明度烘焙到主贴图的 Alpha 通道。",
+  "contexts": [
+   "conversion log line: lilToon Main2nd/Main3rd layer alpha modes (replace/multiply/add/subtract) were applied to the main texture alpha"
+  ]
+ },
+ {
   "key": "spring.001",
   "en": "[Spring] Skipped {0} inactive PhysBones.",
   "ko": "[Spring] 비활성 PhysBone {0}개는 변환하지 않았습니다.",
@@ -1741,6 +1771,26 @@
   "zh": "这些设置不会导致 VRM 应用无法打开文件。它们用于告知接收此 VRM 的人使用条款，请按销售页面的使用条款选择。",
   "contexts": [
    "note in the usage terms section"
+  ]
+ },
+ {
+  "key": "ux.options.matcap",
+  "en": "Keep MatCap shine",
+  "ko": "MatCap 광택 유지",
+  "ja": "MatCap の光沢を残す",
+  "zh": "保留 MatCap 光泽",
+  "contexts": [
+   "Options tab toggle: keep lilToon MatCap (shine/gloss texture) in the VRM"
+  ]
+ },
+ {
+  "key": "ux.options.matcap.tip",
+  "en": "MToon draws MatCap without lighting, so shiny parts (often hair) stay bright in dark scenes. Turn this off if the avatar will be used in dark environments.",
+  "ko": "MToon은 MatCap을 조명과 상관없이 그려서, 광택이 있는 부분(주로 머리카락)이 어두운 곳에서도 밝게 보입니다. 어두운 환경에서 쓸 거라면 꺼 주세요.",
+  "ja": "MToon は MatCap をライティングに関係なく描画するため、光沢のある部分 (主に髪) が暗い場所でも明るく見えます。暗い環境で使う場合はオフにしてください。",
+  "zh": "MToon 绘制 MatCap 时不受光照影响，因此有光泽的部分 (通常是头发) 在暗处也会显得很亮。如果要在较暗的环境中使用，请关闭此项。",
+  "contexts": [
+   "tooltip for the Keep MatCap shine toggle"
   ]
  },
  {

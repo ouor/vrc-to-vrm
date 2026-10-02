@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using lilToon;
 using UnityEditor;
 using UnityEngine;
@@ -16,13 +17,15 @@ namespace VrcToVrm
     {
         readonly string _textureFolder;
         readonly bool _bakeTextures;
+        readonly bool _keepMatCap;
         readonly Dictionary<Material, Material> _cache = new Dictionary<Material, Material>();
         public readonly List<string> Log = new List<string>();
 
-        public LilToonToMToon(string textureFolder, bool bakeTextures)
+        public LilToonToMToon(string textureFolder, bool bakeTextures, bool keepMatCap = true)
         {
             _textureFolder = textureFolder;
             _bakeTextures = bakeTextures;
+            _keepMatCap = keepMatCap;
         }
 
         public static bool IsLilToon(Material m) =>
@@ -69,11 +72,21 @@ namespace VrcToVrm
             return dst;
         }
 
+        const float UnknownShade = 0.85f;
+
         Material FromUnknown(Material src)
         {
             var dst = NewMToon(src);
-            if (src.HasProperty("_MainTex")) dst.SetTexture("_MainTex", src.GetTexture("_MainTex"));
-            if (src.HasProperty("_Color")) dst.SetColor("_Color", src.GetColor("_Color"));
+            var main = T(src, "_MainTex");
+            var color = C(src, "_Color", Color.white);
+            dst.SetTexture("_MainTex", main);
+            dst.SetColor("_Color", color);
+            // MToon's default shade is a flat pink with no texture; keep the texture and only darken it a little
+            // (VRChat's mobile toon shaders shade softly)
+            dst.SetTexture("_ShadeTexture", main);
+            dst.SetColor("_ShadeColor", new Color(color.r * UnknownShade, color.g * UnknownShade, color.b * UnknownShade, 1));
+            dst.SetFloat("_ShadeShift", 0);
+            dst.SetFloat("_ShadeToony", 0.9f);
             dst.SetFloat("_LightColorAttenuation", 0);
             dst.SetFloat("_IndirectLightIntensity", 0);
             MToon.Utils.ValidateProperties(dst, true);
@@ -115,6 +128,7 @@ namespace VrcToVrm
             // lilToon can take alpha from a separate mask texture; MToon only reads the main texture alpha
             if ((isCutout || isTransparent) && F(src, "_AlphaMaskMode") != 0 && T(src, "_AlphaMask") != null)
                 bakedMain = BakeAlphaMask(src, bakedMain);
+            if (isCutout || isTransparent) bakedMain = BakeLayerAlpha(src, bakedMain);
             dst.SetTexture("_MainTex", bakedMain);
             dst.SetTextureScale("_MainTex", src.GetTextureScale("_MainTex"));
             dst.SetTextureOffset("_MainTex", src.GetTextureOffset("_MainTex"));
@@ -131,22 +145,21 @@ namespace VrcToVrm
                 float border = F(src, "_ShadowBorder", 0.5f), blur = F(src, "_ShadowBlur", 0.1f);
                 float shadeShift = (Mathf.Clamp01(border - blur * 0.5f) * 2f) - 1f;
                 float shadeToony = shadeShift == 1f ? 1f : (2f - (Mathf.Clamp01(border + blur * 0.5f) * 2f)) / (1f - shadeShift);
-                var shadowStrength = F(src, "_ShadowStrength", 1);
-                var shadowColor = C(src, "_ShadowColor", Color.white);
-                if (T(src, "_ShadowStrengthMask") != null || F(src, "_ShadowMainStrength") != 0)
+                var shade = new ShadeModel(this, src);
+                if (shade.NeedsTexture && _bakeTextures && bakedMain != null)
                 {
                     dst.SetColor("_ShadeColor", Color.white);
-                    dst.SetTexture("_ShadeTexture", BakeShadowTexture(src, bakedMain));
+                    dst.SetTexture("_ShadeTexture", BakeShadeTexture(src, shade, bakedMain, mainColor));
                 }
                 else
                 {
-                    dst.SetColor("_ShadeColor", new Color(
-                        1f - (1f - shadowColor.r) * shadowStrength,
-                        1f - (1f - shadowColor.g) * shadowStrength,
-                        1f - (1f - shadowColor.b) * shadowStrength, 1f));
-                    dst.SetTexture("_ShadeTexture", T(src, "_ShadowColorTex") ?? bakedMain);
+                    // without per-pixel inputs the shade is the main color times a constant
+                    var k = shade.Shade(Color.white, null, null, null, 1) * mainColor.linear;
+                    dst.SetColor("_ShadeColor", (Color)ToSRGB32(k));
+                    dst.SetTexture("_ShadeTexture", bakedMain);
                 }
-                dst.SetFloat("_ReceiveShadowRate", 1);
+                // lilToon only darkens by cast shadows when _ShadowReceive is on (MToon still applies them once)
+                dst.SetFloat("_ReceiveShadowRate", F(src, "_ShadowReceive"));
                 dst.SetTexture("_ReceiveShadowTexture", null);
                 dst.SetFloat("_ShadingGradeRate", 1);
                 dst.SetTexture("_ShadingGradeTexture", T(src, "_ShadowBorderMask"));
@@ -159,40 +172,50 @@ namespace VrcToVrm
                 dst.SetTexture("_ShadeTexture", bakedMain);
             }
 
-            if (F(src, "_UseEmission") == 1 && T(src, "_EmissionMap") != null)
-            {
-                dst.SetColor("_EmissionColor", C(src, "_EmissionColor", Color.white));
-                dst.SetTexture("_EmissionMap", T(src, "_EmissionMap"));
-            }
+            if (F(src, "_UseEmission") == 1) ConvertEmission(src, dst, bakedMain, mainColor);
 
-            if (F(src, "_UseRim") == 1)
+            if (F(src, "_UseRim") == 1 && F(src, "_RimBlendMode", 1) != 3)
             {
-                dst.SetColor("_RimColor", C(src, "_RimColor", Color.white));
-                dst.SetTexture("_RimTexture", T(src, "_RimColorTex"));
+                // lilToon uses the color's alpha as strength, fades the rim on the shadowed side (_RimShadowMask)
+                // and can keep it to the lit side (_RimDirStrength). MToon draws it everywhere at full color,
+                // so fold those into one average strength.
+                var rim = C(src, "_RimColor", Color.white);
+                float strength = Mathf.Clamp01(rim.a) * (1f - 0.5f * F(src, "_RimShadowMask", 0.5f)) * (1f - 0.5f * F(src, "_RimDirStrength"));
+                dst.SetColor("_RimColor", Scaled(rim, strength));
+                float rimMain = F(src, "_RimMainStrength");
+                var rimTex = T(src, "_RimColorTex");
+                dst.SetTexture("_RimTexture", rimTex != null || rimMain > 0
+                    ? BakeLayer(rimTex, null, bakedMain, mainColor, rimMain, src.name + "_rim")
+                    : null);
                 dst.SetFloat("_RimLightingMix", F(src, "_RimEnableLighting", 1));
-                float fp = F(src, "_RimFresnelPower", 3), rimBlur = F(src, "_RimBlur", 0.65f), rimBorder = F(src, "_RimBorder", 0.5f);
-                dst.SetFloat("_RimFresnelPower", fp / Mathf.Max(0.001f, rimBlur));
-                dst.SetFloat("_RimLift", Mathf.Pow(1f - rimBorder, fp) * (1f - rimBlur));
+                var (rimPower, rimLift) = FitRim(F(src, "_RimFresnelPower", 3), F(src, "_RimBorder", 0.5f), F(src, "_RimBlur", 0.65f));
+                dst.SetFloat("_RimFresnelPower", rimPower);
+                dst.SetFloat("_RimLift", rimLift);
             }
             else
             {
                 dst.SetColor("_RimColor", Color.black);
             }
 
-            if (F(src, "_UseMatCap") == 1 && F(src, "_MatCapBlendMode") != 3 && T(src, "_MatCapTex") != null)
+            if (F(src, "_UseMatCap") == 1 && F(src, "_MatCapBlendMode") != 3 && T(src, "_MatCapTex") != null && !_keepMatCap)
+            {
+                Log.Add(L.Tr("mat.011", src.name));
+            }
+            else if (F(src, "_UseMatCap") == 1 && F(src, "_MatCapBlendMode") != 3 && T(src, "_MatCapTex") != null)
             {
                 // MToon's sphere-add has no mask and always adds at full strength, so fold blend/color/mask into the texture
                 var mask = T(src, "_MatCapBlendMask");
-                float maskMean = mask != null ? MeanRed(mask) : 1f;
+                float maskMean = mask != null ? MeanRed(mask, IsSRGB(mask)) : 1f;
                 var tint = C(src, "_MatCapColor", Color.white);
                 float strength = F(src, "_MatCapBlend", 1) * maskMean * tint.a;
-                if (strength < MinMatCapStrength)
+                // spreading a mask that covers only part of the material puts a veil of shine on the rest
+                if (strength < MinMatCapStrength || mask != null && maskMean < MinMatCapCoverage)
                 {
                     Log.Add(L.Warn("mat.004", src.name, strength));
                 }
                 else
                 {
-                    var scale = new Color(tint.r * strength, tint.g * strength, tint.b * strength, 1);
+                    var scale = Scaled(tint, strength); // TintTexture multiplies sRGB texels, i.e. linear × scale.linear
                     dst.SetTexture("_SphereAdd", Approximately(scale, Color.white) ? T(src, "_MatCapTex") : TintTexture(T(src, "_MatCapTex"), scale, src.name + "_matcap"));
                     if (mask != null) Log.Add(L.Warn("mat.005", src.name, strength));
                 }
@@ -229,6 +252,52 @@ namespace VrcToVrm
             if (lilShaderUtils.IsRefractionShaderName(shaderName) || lilShaderUtils.IsFurShaderName(shaderName))
                 Log.Add(L.Warn("mat.007", src.name, shaderName));
             return dst;
+        }
+
+        /// <summary>
+        /// lilToon's rim ramps (1 - N·V)^fresnel linearly from border - blur/2 to border + blur/2 (lilTooningScale);
+        /// MToon's is saturate(1 - N·V + lift)^power. Fit MToon to be full where lilToon's ramp ends and 5% where it starts.
+        /// (lilToon's own MToon export uses fresnel / blur, which spreads narrow rims over most of the surface.)
+        /// </summary>
+        static (float power, float lift) FitRim(float fresnel, float border, float blur)
+        {
+            fresnel = Mathf.Max(0.01f, fresnel);
+            float lo = Mathf.Clamp01(border - blur * 0.5f), hi = Mathf.Clamp01(border + blur * 0.5f);
+            float x0 = Mathf.Pow(lo, 1f / fresnel), x1 = Mathf.Pow(Mathf.Max(hi, 0.0001f), 1f / fresnel);
+            float lift = 1f - x1;
+            float start = x0 + lift;
+            if (start <= 0.0001f) return (1f, lift);  // ramp starts at the silhouette's opposite: a soft rim everywhere
+            if (start >= 0.999f) return (50f, lift); // no ramp: a hard edge
+            return (Mathf.Clamp(Mathf.Log(0.05f) / Mathf.Log(start), 0.5f, 50f), lift);
+        }
+
+        /// <summary>
+        /// lilToon emission = color × alpha × _EmissionBlend × map × mask (× main color). MToon only has
+        /// color × map, so the color strength goes into _EmissionColor and the per-pixel parts are baked into one map.
+        /// </summary>
+        void ConvertEmission(Material src, Material dst, Texture bakedMain, Color mainColor)
+        {
+            if (F(src, "_EmissionMap_UVMode") != 0 || F(src, "_EmissionBlendMode", 1) == 3)
+            {
+                // MToon reads every texture with the main UV and only adds emission
+                Log.Add(L.Warn("mat.010", src.name));
+                return;
+            }
+            var color = C(src, "_EmissionColor", Color.white);
+            var blink = V(src, "_EmissionBlink", Vector4.zero);
+            float strength = Mathf.Clamp01(color.a) * F(src, "_EmissionBlend", 1) * (1f - 0.5f * Mathf.Clamp01(blink.x));
+            var emission = Scaled(color, strength);
+            if (emission.maxColorComponent < 0.004f) return;
+
+            var map = T(src, "_EmissionMap");
+            var mask = T(src, "_EmissionBlendMask");
+            float mainStrength = F(src, "_EmissionMainStrength");
+            var tex = mask != null || mainStrength > 0
+                ? BakeLayer(map, mask, bakedMain, mainColor, mainStrength, src.name + "_emission")
+                : map;
+            // a null map is fine: MToon's _EmissionMap defaults to white, i.e. the color covers the whole material
+            dst.SetColor("_EmissionColor", emission);
+            dst.SetTexture("_EmissionMap", tex);
         }
 
         // ---------------------------------------------------------------- texture baking
@@ -277,31 +346,143 @@ namespace VrcToVrm
             finally { FreeTemps(); }
         }
 
-        Texture BakeShadowTexture(Material src, Texture bakedMain)
+        // lilToon works in linear space (the project is Linear), so strengths and blends are applied to
+        // linearised colors and converted back to sRGB for the material / PNG.
+
+        /// <summary>color × strength in linear space, returned as an sRGB material color.</summary>
+        static Color Scaled(Color c, float strength)
         {
-            if (!_bakeTextures || bakedMain == null) return bakedMain;
+            var l = c.linear * strength;
+            return new Color(l.r, l.g, l.b, 1).gamma;
+        }
+
+        /// <summary>True when the GPU linearises the texture's RGB (color textures); masks imported as data are not.</summary>
+        static bool IsSRGB(Texture t) =>
+            t == null || !(AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(t)) is TextureImporter ti) || ti.sRGBTexture;
+
+        /// <summary>A texel the way the shader reads it: RGB linearised for sRGB textures, alpha always linear.</summary>
+        static Color Texel(Color32 c, bool srgb) => srgb ? ((Color)c).linear : (Color)c;
+
+        static float Channel(byte v, bool srgb) => srgb ? Mathf.GammaToLinearSpace(v / 255f) : v / 255f;
+
+        static Color32 ToSRGB32(Color linear) => new Color(Mathf.Clamp01(linear.r), Mathf.Clamp01(linear.g), Mathf.Clamp01(linear.b), 1).gamma;
+
+        /// <summary>
+        /// lilToon's shadow (lil_common_frag.hlsl, lilGetShading) reduced to the one shade color MToon has:
+        /// the 2nd/3rd shadow colors cover the part of the shadow their border takes up, and the border gradation
+        /// (_ShadowBorderColor / _ShadowBorderRange) is applied at its average strength over the shadow.
+        /// </summary>
+        class ShadeModel
+        {
+            readonly Color _c1, _c2, _c3, _borderColor;
+            readonly float _w2, _w3, _border, _mainStrength, _strength;
+            public readonly Texture Tex1, Tex2, Tex3, Mask;
+
+            public ShadeModel(LilToonToMToon o, Material src)
+            {
+                float b1 = o.F(src, "_ShadowBorder", 0.5f);
+                _c1 = o.C(src, "_ShadowColor", Color.white).linear;
+                _c2 = o.C(src, "_Shadow2ndColor", Color.clear).linear;
+                _c3 = o.C(src, "_Shadow3rdColor", Color.clear).linear;
+                _w2 = Mathf.Clamp01(_c2.a) * (b1 > 0 ? Mathf.Clamp01(o.F(src, "_Shadow2ndBorder", 0.5f) / b1) : 0);
+                _w3 = Mathf.Clamp01(_c3.a) * (b1 > 0 ? Mathf.Clamp01(o.F(src, "_Shadow3rdBorder", 0.25f) / b1) : 0);
+                _mainStrength = o.F(src, "_ShadowMainStrength");
+                _strength = o.F(src, "_ShadowStrength", 1);
+                _borderColor = o.C(src, "_ShadowBorderColor", Color.black).linear;
+                float range = o.F(src, "_ShadowBorderRange");
+                // lns.w ramps 0→1 over [b1 - range, b1]; its mean over the shadowed part [0, b1]
+                _border = range <= 0 || b1 <= 0 ? 0 : range >= b1 ? 1 - b1 / (2 * range) : 0.5f * range / b1;
+                bool lut = o.F(src, "_ShadowColorType") == 1;
+                Tex1 = lut ? null : o.T(src, "_ShadowColorTex");
+                Tex2 = lut || _w2 <= 0 ? null : o.T(src, "_Shadow2ndColorTex");
+                Tex3 = lut || _w3 <= 0 ? null : o.T(src, "_Shadow3rdColorTex");
+                // SDF / flat face shadows (mask types 1, 2) use the mask differently; MToon shades those by normals
+                Mask = o.F(src, "_ShadowMaskType") == 0 ? o.T(src, "_ShadowStrengthMask") : null;
+                MaskIsSRGB = IsSRGB(Mask);
+            }
+
+            public readonly bool MaskIsSRGB;
+
+            public bool NeedsTexture => _mainStrength > 0 || Tex1 != null || Tex2 != null || Tex3 != null || Mask != null;
+
+            /// <summary>
+            /// Linear shade color for linear albedo <paramref name="a"/> (linear texels, null when absent;
+            /// <paramref name="mask"/> as the shader reads it).
+            /// </summary>
+            public Color Shade(Color a, Color? t1, Color? t2, Color? t3, float mask)
+            {
+                Color Layer(Color c, Color? t) => (t is Color tc ? Color.Lerp(a, tc, tc.a) : a) * c;
+                var ind = Layer(_c1, t1);
+                if (_w2 > 0) ind = Color.Lerp(ind, Layer(_c2, t2), _w2);
+                if (_w3 > 0) ind = Color.Lerp(ind, Layer(_c3, t3), _w3);
+                ind = Color.Lerp(ind, ind * a, _mainStrength);
+                ind = new Color(Mathf.Min(ind.r, a.r), Mathf.Min(ind.g, a.g), Mathf.Min(ind.b, a.b));
+                ind = new Color(Mathf.Lerp(ind.r, a.r, _border * _borderColor.r), Mathf.Lerp(ind.g, a.g, _border * _borderColor.g),
+                    Mathf.Lerp(ind.b, a.b, _border * _borderColor.b));
+                var shade = Color.Lerp(a, ind, Mathf.Clamp01(_strength * mask));
+                shade.a = 1;
+                return shade;
+            }
+        }
+
+        Texture BakeShadeTexture(Material src, ShadeModel shade, Texture bakedMain, Color mainColor)
+        {
             try
             {
-                var baker = NewBaker(null);
-                if (baker == null) return bakedMain;
-                var shadowColor = C(src, "_ShadowColor", Color.white);
                 var mainRaw = LoadRaw(bakedMain);
-                baker.SetColor("_Color", Color.white);
-                baker.SetVector("_MainTexHSVG", lilConstants.defaultHSVG);
-                baker.SetFloat("_UseMain2ndTex", 1);
-                baker.SetFloat("_UseMain3rdTex", 1);
-                baker.SetColor("_Color3rd", new Color(1, 1, 1, F(src, "_ShadowMainStrength")));
-                baker.SetFloat("_Main3rdTexBlendMode", 3);
-                baker.SetColor("_Color2nd", new Color(shadowColor.r, shadowColor.g, shadowColor.b, F(src, "_ShadowStrength", 1)));
-                baker.SetFloat("_Main2ndTexBlendMode", 0);
-                baker.SetFloat("_Main2ndTexAlphaMode", 0);
-                baker.SetTexture("_MainTex", mainRaw);
-                baker.SetTexture("_Main3rdTex", mainRaw);
-                baker.SetTexture("_Main2ndTex", LoadRaw(T(src, "_ShadowColorTex")) ?? mainRaw);
-                var mask = LoadRaw(T(src, "_ShadowStrengthMask")) ?? (Texture)Texture2D.whiteTexture;
-                baker.SetTexture("_Main2ndBlendMask", mask);
-                baker.SetTexture("_Main3rdBlendMask", mask);
-                return RunBake(mainRaw, baker, src.name + "_shade", bakedMain) ?? bakedMain;
+                int w = mainRaw.width, h = mainRaw.height;
+                Color32[] Pixels(Texture t) => t == null ? null : Temp(Readable(LoadRaw(t), w, h)).GetPixels32();
+                var main = Temp(Readable(mainRaw, w, h)).GetPixels32();
+                Color32[] t1 = Pixels(shade.Tex1), t2 = Pixels(shade.Tex2), t3 = Pixels(shade.Tex3), mask = Pixels(shade.Mask);
+                var mainLinear = mainColor.linear;
+                var outPx = new Color32[w * h];
+                for (int i = 0; i < outPx.Length; i++)
+                {
+                    var c = shade.Shade(((Color)main[i]).linear * mainLinear,
+                        t1 != null ? Texel(t1[i], true) : (Color?)null, t2 != null ? Texel(t2[i], true) : (Color?)null,
+                        t3 != null ? Texel(t3[i], true) : (Color?)null, mask != null ? Channel(mask[i].r, shade.MaskIsSRGB) : 1);
+                    outPx[i] = ToSRGB32(c);
+                }
+                var outTex = new Texture2D(w, h, TextureFormat.RGBA32, false);
+                outTex.SetPixels32(outPx);
+                outTex.Apply();
+                return SaveTexture(outTex, src.name + "_shade", bakedMain, maxSizeOf: bakedMain, alpha: false) ?? bakedMain;
+            }
+            finally { FreeTemps(); }
+        }
+
+        /// <summary>
+        /// Bakes tex.rgb·a × mask.rgb·a × lerp(1, main × mainColor, mainStrength) into one opaque texture, the way
+        /// lilToon combines them per pixel for emission and rim light. Missing textures count as white.
+        /// </summary>
+        Texture BakeLayer(Texture tex, Texture mask, Texture main, Color mainColor, float mainStrength, string fileName)
+        {
+            var sizeRef = main;
+            if (mainStrength <= 0) main = null;
+            var first = tex != null ? tex : mask != null ? mask : main;
+            if (first == null) return null;
+            if (!_bakeTextures) return tex;
+            try
+            {
+                var firstRaw = LoadRaw(first);
+                int w = firstRaw.width, h = firstRaw.height;
+                Color32[] Pixels(Texture t) => t == null ? null : Temp(Readable(LoadRaw(t), w, h)).GetPixels32();
+                Color32[] tp = Pixels(tex), mp = Pixels(mask), ap = Pixels(main);
+                bool texSRGB = IsSRGB(tex), maskSRGB = IsSRGB(mask);
+                var mainLinear = mainColor.linear;
+                var outPx = new Color32[w * h];
+                for (int i = 0; i < outPx.Length; i++)
+                {
+                    var c = Color.white;
+                    if (tp != null) { var t = Texel(tp[i], texSRGB); c *= t * t.a; }
+                    if (mp != null) { var m = Texel(mp[i], maskSRGB); c *= m * m.a; }
+                    if (ap != null) c *= Color.Lerp(Color.white, ((Color)ap[i]).linear * mainLinear, mainStrength);
+                    outPx[i] = ToSRGB32(c);
+                }
+                var outTex = new Texture2D(w, h, TextureFormat.RGBA32, false);
+                outTex.SetPixels32(outPx);
+                outTex.Apply();
+                return SaveTexture(outTex, fileName, tex != null ? tex : main != null ? main : mask, maxSizeOf: sizeRef, alpha: false) ?? tex;
             }
             finally { FreeTemps(); }
         }
@@ -316,6 +497,7 @@ namespace VrcToVrm
         }
 
         const float MinMatCapStrength = 0.35f;
+        const float MinMatCapCoverage = 0.7f;
 
         static bool Approximately(Color a, Color b) =>
             Mathf.Abs(a.r - b.r) < 0.01f && Mathf.Abs(a.g - b.g) < 0.01f && Mathf.Abs(a.b - b.b) < 0.01f;
@@ -341,13 +523,13 @@ namespace VrcToVrm
             }
         }
 
-        static float MeanRed(Texture tex)
+        static float MeanRed(Texture tex, bool srgb)
         {
             var small = Readable(tex, 64, 64);
             float sum = 0;
-            foreach (var c in small.GetPixels32()) sum += c.r;
+            foreach (var c in small.GetPixels32()) sum += Channel(c.r, srgb);
             Object.DestroyImmediate(small);
-            return sum / (64 * 64 * 255f);
+            return sum / (64 * 64);
         }
 
         /// <summary>
@@ -376,11 +558,12 @@ namespace VrcToVrm
                 var mainRaw = LoadRaw(main);
                 var colors = mainRaw.GetPixels32();
                 var mask = Temp(Readable(LoadRaw(T(src, "_AlphaMask")), mainRaw.width, mainRaw.height)).GetPixels32();
+                bool maskSRGB = IsSRGB(T(src, "_AlphaMask"));
                 int mode = (int)F(src, "_AlphaMaskMode");
                 float scale = F(src, "_AlphaMaskScale", 1), value = F(src, "_AlphaMaskValue");
                 for (int i = 0; i < colors.Length; i++)
                 {
-                    float m = Mathf.Clamp01(mask[i].r / 255f * scale + value), a = colors[i].a / 255f;
+                    float m = Mathf.Clamp01(Channel(mask[i].r, maskSRGB) * scale + value), a = colors[i].a / 255f;
                     a = mode == 1 ? m : mode == 2 ? a * m : mode == 3 ? Mathf.Clamp01(a + m) : mode == 4 ? Mathf.Clamp01(a - m) : a;
                     colors[i].a = (byte)Mathf.RoundToInt(a * 255);
                 }
@@ -389,6 +572,46 @@ namespace VrcToVrm
                 outTex.Apply();
                 Log.Add(L.Tr("mat.009", src.name));
                 return SaveTexture(outTex, src.name + "_alpha", main) ?? main;
+            }
+            finally { FreeTemps(); }
+        }
+
+        /// <summary>
+        /// lilToon's 2nd/3rd layers can replace, multiply, add to or subtract from the alpha (_Main2ndTexAlphaMode);
+        /// the main-texture bake keeps the main alpha, so apply those modes here.
+        /// </summary>
+        Texture BakeLayerAlpha(Material src, Texture main)
+        {
+            var layers = new[] { "2nd", "3rd" }
+                .Where(n => F(src, $"_UseMain{n}Tex") != 0 && F(src, $"_Main{n}TexAlphaMode") != 0).ToArray();
+            if (main == null || layers.Length == 0) return main;
+            try
+            {
+                var mainRaw = LoadRaw(main);
+                int w = mainRaw.width, h = mainRaw.height;
+                var colors = mainRaw.GetPixels32();
+                foreach (var n in layers)
+                {
+                    int mode = (int)F(src, $"_Main{n}TexAlphaMode");
+                    float colorA = C(src, $"_Color{n}", Color.white).a;
+                    var tex = T(src, $"_Main{n}Tex");
+                    var mask = T(src, $"_Main{n}BlendMask");
+                    var tp = tex != null ? Temp(Readable(LoadRaw(tex), w, h)).GetPixels32() : null;
+                    var mp = mask != null ? Temp(Readable(LoadRaw(mask), w, h)).GetPixels32() : null;
+                    bool maskSRGB = IsSRGB(mask);
+                    for (int i = 0; i < colors.Length; i++)
+                    {
+                        float la = colorA * (tp != null ? tp[i].a / 255f : 1) * (mp != null ? Channel(mp[i].r, maskSRGB) : 1);
+                        float a = colors[i].a / 255f;
+                        a = mode == 1 ? la : mode == 2 ? a * la : mode == 3 ? Mathf.Clamp01(a + la) : mode == 4 ? Mathf.Clamp01(a - la) : a;
+                        colors[i].a = (byte)Mathf.RoundToInt(a * 255);
+                    }
+                }
+                var outTex = new Texture2D(w, h, TextureFormat.RGBA32, false);
+                outTex.SetPixels32(colors);
+                outTex.Apply();
+                Log.Add(L.Tr("mat.012", src.name));
+                return SaveTexture(outTex, src.name + "_layeralpha", main) ?? main;
             }
             finally { FreeTemps(); }
         }
@@ -414,24 +637,28 @@ namespace VrcToVrm
             finally { FreeTemps(); }
         }
 
-        Texture2D RunBake(Texture2D srcTex, Material baker, string fileName, Texture reference)
+        Texture2D RunBake(Texture2D srcTex, Material baker, string fileName, Texture reference, Texture maxSizeOf = null, bool alpha = true)
         {
             if (srcTex == null) return null;
             Texture2D outTex = null;
             lilToonInspector.RunBake(ref outTex, srcTex, baker);
-            return SaveTexture(outTex, fileName, reference);
+            return SaveTexture(outTex, fileName, reference, maxSizeOf: maxSizeOf, alpha: alpha);
         }
 
         /// <summary>
         /// Writes a generated texture as PNG into the output folder and imports it with the reference texture's
         /// importer settings (like lilToon's CopyTextureSetting), keeping the full resolution so the VRM is not downscaled.
+        /// Textures that are only drawn on top of the main texture (shade, rim, emission) pass <paramref name="maxSizeOf"/> so
+        /// they are not exported larger than it, and <paramref name="alpha"/> false since MToon ignores their alpha.
         /// Destroys <paramref name="tex"/>.
         /// </summary>
-        Texture2D SaveTexture(Texture2D tex, string fileName, Texture reference, TextureWrapMode? wrap = null)
+        Texture2D SaveTexture(Texture2D tex, string fileName, Texture reference, TextureWrapMode? wrap = null,
+            Texture maxSizeOf = null, bool alpha = true)
         {
             Directory.CreateDirectory(_textureFolder);
             var path = AssetDatabase.GenerateUniqueAssetPath($"{_textureFolder}/{Sanitize(fileName)}.png");
             int size = Mathf.Max(tex.width, tex.height);
+            if (maxSizeOf != null) size = Mathf.Min(size, Mathf.Max(maxSizeOf.width, maxSizeOf.height));
             File.WriteAllBytes(path, tex.EncodeToPNG());
             Object.DestroyImmediate(tex);
             AssetDatabase.ImportAsset(path);
@@ -446,8 +673,10 @@ namespace VrcToVrm
                     dst.SetPlatformTextureSettings(srcImporter.GetDefaultPlatformTextureSettings());
                 }
                 dst.textureType = TextureImporterType.Default; // baked results are color textures even if the reference was not
-                dst.alphaSource = TextureImporterAlphaSource.FromInput; // the reference may be imported without alpha
-                dst.maxTextureSize = Mathf.Max(dst.maxTextureSize, Mathf.Min(8192, Mathf.NextPowerOfTwo(size)));
+                // the reference may be imported without alpha
+                dst.alphaSource = alpha ? TextureImporterAlphaSource.FromInput : TextureImporterAlphaSource.None;
+                var fit = Mathf.Min(8192, Mathf.NextPowerOfTwo(size));
+                dst.maxTextureSize = maxSizeOf != null ? fit : Mathf.Max(dst.maxTextureSize, fit);
                 if (wrap != null) dst.wrapMode = wrap.Value;
                 dst.SaveAndReimport();
             }

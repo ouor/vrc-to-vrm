@@ -646,6 +646,7 @@ namespace VrcToVrm
             _o.ForceTPose = EditorGUILayout.ToggleLeft(new GUIContent(L.Tr("ui.079"), L.Tr("ui.080")), _o.ForceTPose);
             _o.RemoveInactive = EditorGUILayout.ToggleLeft(new GUIContent(L.Tr("ui.081"), L.Tr("ui.082")), _o.RemoveInactive);
             _o.BakeTextures = EditorGUILayout.ToggleLeft(new GUIContent(L.Tr("ui.087"), L.Tr("ui.088")), _o.BakeTextures);
+            _o.KeepMatCap = EditorGUILayout.ToggleLeft(new GUIContent(L.Tr("ux.options.matcap"), L.Tr("ux.options.matcap.tip")), _o.KeepMatCap);
 
             EditorGUILayout.Space(8);
             _optionsAdvanced = EditorGUILayout.Foldout(_optionsAdvanced, L.Tr("ux.advanced"), true);
