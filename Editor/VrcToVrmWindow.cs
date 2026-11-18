@@ -15,8 +15,8 @@ namespace VrcToVrm
     {
         const string PrefsPrefix = "VrcToVrm.";
 
-        enum Tab { Expression, Spring, Meta, Options, Result }
-        static string[] TabLabels => new[] { L.Tr("ui.tab.expression"), L.Tr("ui.tab.spring"), L.Tr("ui.tab.meta"), L.Tr("ui.tab.options"), L.Tr("ui.tab.result") };
+        enum Tab { Expression, Spring, Clothing, Meta, Options, Result }
+        static string[] TabLabels => new[] { L.Tr("ui.tab.expression"), L.Tr("ui.tab.spring"), L.Tr("ui.tab.clothing"), L.Tr("ui.tab.meta"), L.Tr("ui.tab.options"), L.Tr("ui.tab.result") };
 
         [SerializeField] GameObject _source;
         [SerializeField] Tab _tab;
@@ -151,6 +151,7 @@ namespace VrcToVrm
             {
                 case Tab.Expression: DrawExpressionTab(); break;
                 case Tab.Spring: DrawSpringTab(); break;
+                case Tab.Clothing: DrawClothingTab(); break;
                 case Tab.Meta: DrawMetaTab(); break;
                 case Tab.Options: DrawOptionsTab(); break;
                 case Tab.Result: DrawResultTab(); break;
@@ -259,6 +260,7 @@ namespace VrcToVrm
                 (a.LeftEye && a.RightEye, L.Tr("ui.012"), a.LeftEye && a.RightEye ? $"{a.LeftEye.name} / {a.RightEye.name}" : L.Tr("ui.013"), Tab.Expression),
                 (a.Candidates.Count > 0, L.Tr("ui.014", a.Candidates.Count), a.Fx ? L.Tr("ux.chip.expressions", a.Fx.name) : L.Tr("ui.015"), Tab.Expression),
                 (null, L.Tr("ux.chip.spring", a.PhysBoneCount), L.Tr("ux.chip.springTip", a.PhysBoneCount, a.ColliderCount), Tab.Spring),
+                (a.ClothingGroups.Count > 0 ? (bool?)true : null, L.Tr("ux.chip.clothing", a.ClothingGroups.Count), L.Tr("ux.chip.clothingTip", a.ClothingClips.Count, a.ClothingGroups.Count), Tab.Clothing),
                 (null, hidden > 0 ? L.Tr("ux.chip.meshesHidden", a.RendererCount - hidden, hidden) : L.Tr("ux.chip.meshes", a.RendererCount),
                     hidden > 0 ? L.Tr("ux.chip.meshesTip", hidden) : L.Tr("ux.chip.meshesAllTip"), Tab.Options),
             };
@@ -542,6 +544,29 @@ namespace VrcToVrm
 
         // ================================================================ meta tab
 
+        void DrawClothingTab()
+        {
+            var a = _analysis;
+            if (a == null || a.ClothingGroups.Count == 0)
+            {
+                EditorGUILayout.HelpBox(L.Tr("ux.clothing.empty"), MessageType.Info);
+                return;
+            }
+            EditorGUILayout.LabelField(L.Tr("ux.clothing.help"), _hint);
+            foreach (var g in a.ClothingGroups)
+            {
+                _o.ClothingChoices.TryGetValue(g.Key, out var selected);
+                var labels = new[] { L.Tr("ux.clothing.default") }.Concat(g.Clips.Select(c => c.ShortLabel)).ToArray();
+                int idx = 0;
+                if (selected != null) idx = g.Clips.FindIndex(c => c.Name == selected.Name) + 1;
+                if (idx < 0) idx = 0;
+                int picked = EditorGUILayout.Popup(new GUIContent(g.DisplayName + "  (" + L.Tr("ux.clothing.variants", g.Clips.Count) + ")", g.Clips.Count > 0 ? string.Join("\n", g.Clips.Select(c => c.ShortLabel)) : ""), idx, labels);
+                if (picked == 0) _o.ClothingChoices.Remove(g.Key);
+                else _o.ClothingChoices[g.Key] = g.Clips[picked - 1];
+            }
+            EditorGUILayout.LabelField(L.Tr("ux.clothing.tip"), _hint);
+        }
+
         void DrawMetaTab()
         {
             EditorGUILayout.LabelField(L.Tr("ux.meta.optional"), _hint);
@@ -647,6 +672,8 @@ namespace VrcToVrm
             _o.RemoveInactive = EditorGUILayout.ToggleLeft(new GUIContent(L.Tr("ui.081"), L.Tr("ui.082")), _o.RemoveInactive);
             _o.BakeTextures = EditorGUILayout.ToggleLeft(new GUIContent(L.Tr("ui.087"), L.Tr("ui.088")), _o.BakeTextures);
             _o.KeepMatCap = EditorGUILayout.ToggleLeft(new GUIContent(L.Tr("ux.options.matcap"), L.Tr("ux.options.matcap.tip")), _o.KeepMatCap);
+            _o.SmartFallback = EditorGUILayout.ToggleLeft(new GUIContent(L.Tr("ui.089"), L.Tr("ui.086")), _o.SmartFallback);
+            _o.DropAdditiveMaterials = EditorGUILayout.ToggleLeft(new GUIContent(L.Tr("ui.093"), L.Tr("ui.100")), _o.DropAdditiveMaterials);
 
             EditorGUILayout.Space(8);
             _optionsAdvanced = EditorGUILayout.Foldout(_optionsAdvanced, L.Tr("ux.advanced"), true);
@@ -657,7 +684,7 @@ namespace VrcToVrm
                 EditorGUILayout.LabelField(L.Tr("ui.084"), _hint);
                 _o.UseSparseAccessor = EditorGUILayout.ToggleLeft(new GUIContent("Sparse Accessor", L.Tr("ui.085")), _o.UseSparseAccessor);
                 EditorGUILayout.LabelField(L.Tr("ui.085"), _hint);
-                _o.KeepWorkingCopy = EditorGUILayout.ToggleLeft(new GUIContent(L.Tr("ui.090"), L.Tr("ui.091")), _o.KeepWorkingCopy);
+                _o.KeepWorkingCopy = EditorGUILayout.ToggleLeft(new GUIContent(L.Tr("ui.089"), L.Tr("ui.086")), _o.KeepWorkingCopy);
                 EditorGUILayout.LabelField(L.Tr("ui.091"), _hint);
             }
         }

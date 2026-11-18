@@ -107,13 +107,14 @@ namespace VrcToVrm
                         sb.AppendLine($"  lipsync={a.LipSyncSource}: {string.Join(", ", a.Vowels.Select(kv => $"{kv.Key}={string.Join("+", kv.Value.Select(v => v.ShapeName))}"))}");
                         sb.AppendLine($"  blink={a.BlinkShape} L={a.BlinkLeftShape} R={a.BlinkRightShape} up={a.LookUpShape} down={a.LookDownShape} eyes={a.EyeUpDeg:0}/{a.EyeDownDeg:0}/{a.EyeOuterDeg:0}/{a.EyeInnerDeg:0}");
                         foreach (var kv in o.Emotions) sb.AppendLine($"  emotion {kv.Key} <- {kv.Value.ShortLabel}");
+                        foreach (var g in a.ClothingGroups) sb.AppendLine($"  clothing {g.DisplayName}: {string.Join(", ", g.Clips.Select(c => c.Name))}");
                         foreach (var c in a.Candidates) sb.AppendLine($"  candidate {c.ShortLabel} shapes={c.Shapes.Count}");
 
                         r = VrcToVrmConverter.Convert(src, a, o);
                         var emo = string.Join(",", o.Emotions.Keys.Select(k => k.ToString()));
                         var kb = r.Success && File.Exists(r.VrmPath) ? new FileInfo(r.VrmPath).Length / 1024 : 0;
                         var errors = r.Log.Count(l => l.StartsWith("[Error]") || (l.Contains("Validate:Error") && !l.Contains("Author")));
-                        summary.Add($"{(r.Success ? "OK  " : "FAIL")} {src.name,-28} {kb / 1024,4}MB {sw.Elapsed.TotalSeconds,5:0}s  blink={(a.BlinkShape != null ? "y" : "n")} LR={(a.BlinkLeftShape != null ? "y" : "n")} lip={a.Vowels.Count} emo=[{emo}] cand={a.Candidates.Count} pb={a.PhysBoneCount} err={errors}");
+                        summary.Add($"{(r.Success ? "OK  " : "FAIL")} {src.name,-28} {kb / 1024,4}MB {sw.Elapsed.TotalSeconds,5:0}s  blink={(a.BlinkShape != null ? "y" : "n")} LR={(a.BlinkLeftShape != null ? "y" : "n")} lip={a.Vowels.Count} emo=[{emo}] cand={a.Candidates.Count} cloth={a.ClothingClips.Count}/{a.ClothingGroups.Count} pb={a.PhysBoneCount} err={errors}");
                     }
                     catch (System.Exception e)
                     {

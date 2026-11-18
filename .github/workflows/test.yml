@@ -1,0 +1,37 @@
+name: Tests (offline harness)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 -m pip install --upgrade pip
+      - name: Install pytest
+        run: python3 -m pip install pytest
+      - name: Unit + synthetic-package e2e
+        run: python3 -m pytest tests -q
+      - name: Localization is generated
+        run: |
+          python3 "Localization~/gen_table.py"
+          git diff --exit-code -- Editor/LocalizationTable.cs
+      - name: C# sanity (braces, asmdef, meta pairing)
+        run: >
+          python3 - << 'PY'
+          import json, glob
+          for f in glob.glob('Editor/*.cs'):
+              s = open(f, encoding='utf-8').read()
+              assert s.count('{') == s.count('}'), f
+              assert s.count('(') == s.count(')'), f
+          json.load(open('Editor/VrcToVrm.Editor.asmdef'))
+          import os
+          for f in glob.glob('Editor/*.cs'):
+              assert os.path.exists(f + '.meta'), f
+          print('c# sanity ok')
+          PY
