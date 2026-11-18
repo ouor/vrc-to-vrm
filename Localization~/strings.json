@@ -152,6 +152,16 @@
   ]
  },
  {
+  "key": "analysis.016",
+  "en": "Found {0} clothing clips in {1} groups (Clothing tab). Choose one variant per group before converting.",
+  "ko": "옷 클립 {0}개({1}개 그룹)를 찾았습니다(Clothing 탭). 변환 전에 그룹마다 하나를 선택하세요.",
+  "ja": "衣装クリップ{0}個（{1}グループ）を見つけました(Clothingタブ)。変換前にグループごとにお選びください。",
+  "zh": "在 {0} 个衣装片段（{1} 组）中找到。转换前请在 Clothing 标签页中为每组选择一个。",
+  "contexts": [
+   "VrcAvatarAnalysis.cs: clothing note"
+  ]
+ },
+ {
   "key": "batch.001",
   "en": "The selection contains no VRChat avatar prefabs. Select a prefab or folder in the Project window.",
   "ko": "선택한 항목에 VRChat 아바타 프리팹이 없습니다. Project 창에서 프리팹이나 폴더를 선택하세요.",
@@ -159,6 +169,16 @@
   "zh": "所选项目中没有 VRChat 模型预制件。请在 Project 窗口中选择预制件或文件夹。",
   "contexts": [
    "VrcToVrmBatch.cs:59: EditorUtility.DisplayDialog(\"VRC → VRM\", \"선택한 항목에 VRChat 아바타 프리팹이 없습니다. Project 창에서 프리팹이나 폴더를 선택하세요.\", \"OK\");"
+  ]
+ },
+ {
+  "key": "clothing.001",
+  "en": "[Clothing] {0}: {1} curve(s) could not be applied (object or blendshape missing)",
+  "ko": "[Clothing] {0}: {1}개 커브를 적용하지 못했습니다(오브젝트 또는 블렌드셰이프 없음)",
+  "ja": "[Clothing] {0}: {1}個のカーブを適用できませんでした（オブジェクトまたはブレンドシェイプがありません）",
+  "zh": "[Clothing] {0}: {1} 条曲线无法应用（对象或混合形状缺失）",
+  "contexts": [
+   "ClothingVariants.cs: Apply"
   ]
  },
  {
@@ -313,6 +333,16 @@
   ]
  },
  {
+  "key": "conv.016",
+  "en": "[Material] Shader families: {0}",
+  "ko": "[Material] 셰이더 종류: {0}",
+  "ja": "[Material] シェーダーの種類: {0}",
+  "zh": "[Material] 着色器类型：{0}",
+  "contexts": [
+   "VrcToVrmConverter.cs: shader family stats"
+  ]
+ },
+ {
   "key": "mat.001",
   "en": "VRM/MToon shader not found (check that UniVRM is installed).",
   "ko": "VRM/MToon 셰이더를 찾을 수 없습니다 (UniVRM 설치 확인).",
@@ -430,6 +460,46 @@
   "zh": "[Material] {0}: 已将 2nd/3rd 图层的透明度烘焙到主贴图的 Alpha 通道。",
   "contexts": [
    "conversion log line: lilToon Main2nd/Main3rd layer alpha modes (replace/multiply/add/subtract) were applied to the main texture alpha"
+  ]
+ },
+ {
+  "key": "mat.013",
+  "en": "[Material] {0}: {1} is not lilToon/Poiyomi, so a Standard-style approximation (cutoff/bump/emission) was used.",
+  "ko": "[Material] {0}: {1}은 lilToon/Poiyomi가 아니므로 Standard 근사로 변환했습니다(cutoff/bump/emission 유지).",
+  "ja": "[Material] {0}: {1}はlilToon/PoiyomiではないためStandard風に近似しました(cutoff/bump/emission維持)。",
+  "zh": "[Material] {0}: {1} 不是 lilToon/Poiyomi，已按 Standard 风格近似（保留裁剪/凹凸/发光）。",
+  "contexts": [
+   "LilToonToMToon.cs: FromUnknown smart fallback"
+  ]
+ },
+ {
+  "key": "mat.014",
+  "en": "[Material] {0}: Baked {1} discarded Poiyomi UDIM tiles ({2}x{3} grid) and dissolve {4} into the main texture alpha.",
+  "ko": "[Material] {0}: 버려진 Poiyomi UDIM 타일 {1}개({2}x{3})와 디졸브 {4}를 메인 텍스처 알파에 구웠습니다.",
+  "ja": "[Material] {0}: 破棄されたPoiyomi UDIMタイル{1}個（{2}x{3}）とディゾルブ{4}をメインテクスチャのアルファに焼きました。",
+  "zh": "[Material] {0}: 已将 {1} 个弃用的 Poiyomi UDIM 瓦片（{2}x{3}）和消解 {4} 烘焙到主纹理 Alpha。",
+  "contexts": [
+   "LilToonToMToon.cs: FromPoiyomi UDIM bake"
+  ]
+ },
+ {
+  "key": "mat.015",
+  "en": "[Material] {0}: Only the first Poiyomi emission channel was kept; the rest have no MToon equivalent.",
+  "ko": "[Material] {0}: Poiyomi 발광 채널 중 첫 번째만 유지했습니다. 나머지는 MToon에 없습니다.",
+  "ja": "[Material] {0}: Poiyomi発光チャンネルの最初のものだけ残しました。残りはMToonにありません。",
+  "zh": "[Material] {0}: 仅保留 Poiyomi 发光通道中的第一条；其余没有 MToon 对应项。",
+  "contexts": [
+   "LilToonToMToon.cs: FromPoiyomi emission"
+  ]
+ },
+ {
+  "key": "mat.016",
+  "en": "[Material] {0}: Poiyomi {1} has no MToon equivalent, so it was converted to transparency.",
+  "ko": "[Material] {0}: Poiyomi {1}은 MToon에 없으므로 투명하게 변환했습니다.",
+  "ja": "[Material] {0}: Poiyomi {1}はMToonにないため透明に変換しました。",
+  "zh": "[Material] {0}: Poiyomi {1} 没有 MToon 对应项，已转为透明。",
+  "contexts": [
+   "LilToonToMToon.cs: FromPoiyomi additive"
   ]
  },
  {
@@ -1284,6 +1354,16 @@
   ]
  },
  {
+  "key": "ui.086",
+  "en": "Approximate other shaders (Standard, etc.) with cutoff/bump/emission instead of main texture only",
+  "ko": "그 외 셰이더(Standard 등)를 메인 텍스처만으로 하지 않고 cutoff/bump/emission까지 근사 변환",
+  "ja": "その他のシェーダー(Standard等)をメインテクスチャだけでなくcutoff/bump/emissionまで近似します",
+  "zh": "将其他着色器（Standard 等）以裁剪/凹凸/发光近似，而不只是主纹理",
+  "contexts": [
+   "VrcToVrmWindow.cs: SmartFallback tip"
+  ]
+ },
+ {
   "key": "ui.087",
   "en": "Bake lilToon textures",
   "ko": "lilToon 텍스처 베이크",
@@ -1301,6 +1381,16 @@
   "zh": "将 2nd/3rd 图层、色调校正、阴影遮罩烘焙到贴图。即使关闭也始终烘焙 Alpha 遮罩 (否则透明部分会变为不透明)",
   "contexts": [
    "VrcToVrmWindow.cs:577: _o.BakeTextures = EditorGUILayout.ToggleLeft(new GUIContent(\"lilToon 텍스처 베이크\", \"2nd/3rd 레이어, 색조 보정, 그림자 마스크를 텍스처로 굽습니다. 알파 마스크는 꺼도 항상 굽습니다(안 하면 투명 부분이 불투명해짐)\"), _o.BakeTextures);"
+  ]
+ },
+ {
+  "key": "ui.089",
+  "en": "Approximate other shaders",
+  "ko": "그 외 셰이더 근사 변환",
+  "ja": "その他のシェーダーを近似",
+  "zh": "近似其他着色器",
+  "contexts": [
+   "VrcToVrmWindow.cs: SmartFallback"
   ]
  },
  {
@@ -1331,6 +1421,16 @@
   "zh": "尚未转换。请用下方按钮进行转换。",
   "contexts": [
    "VrcToVrmWindow.cs:589: EditorGUILayout.HelpBox(\"아직 변환하지 않았습니다. 아래 버튼으로 변환하세요.\", MessageType.None);"
+  ]
+ },
+ {
+  "key": "ui.093",
+  "en": "Drop additive materials",
+  "ko": "가산 재질 제거",
+  "ja": "加算マテリアルを削除",
+  "zh": "删除加法材质",
+  "contexts": [
+   "VrcToVrmWindow.cs: DropAdditive"
   ]
  },
  {
@@ -1394,6 +1494,16 @@
   ]
  },
  {
+  "key": "ui.100",
+  "en": "Remove Poiyomi additive/multiplicative materials instead of approximating them as transparent",
+  "ko": "Poiyomi 가산/곱하기 재질을 투명 근사로 바꾸지 않고 제거",
+  "ja": "Poiyomiの加算/乗算マテリアルを透明近似せず削除します",
+  "zh": "删除 Poiyomi 的加法/乘法材质，而不是近似为透明",
+  "contexts": [
+   "VrcToVrmWindow.cs: DropAdditive tip"
+  ]
+ },
+ {
   "key": "ui.103",
   "en": "The output folder must be inside Assets.",
   "ko": "출력 폴더는 Assets 안이어야 합니다.",
@@ -1431,6 +1541,16 @@
   "zh": "(无)",
   "contexts": [
    "SearchableDropdown.cs: label of the 'nothing selected' entry in dropdowns"
+  ]
+ },
+ {
+  "key": "ui.tab.clothing",
+  "en": "Clothing",
+  "ko": "옷",
+  "ja": "衣装",
+  "zh": "服装",
+  "contexts": [
+   "VrcToVrmWindow.cs: TabLabels"
   ]
  },
  {
@@ -1544,6 +1664,26 @@
   ]
  },
  {
+  "key": "ux.chip.clothing",
+  "en": "Clothing {0}",
+  "ko": "옷 {0}",
+  "ja": "衣装 {0}",
+  "zh": "服装 {0}",
+  "contexts": [
+   "VrcToVrmWindow.cs: chips"
+  ]
+ },
+ {
+  "key": "ux.chip.clothingTip",
+  "en": "{0} clothing clips in {1} groups",
+  "ko": "{1}개 그룹, 옷 클립 {0}개",
+  "ja": "{1}グループ、衣装クリップ{0}個",
+  "zh": "{1} 组、{0} 个服装片段",
+  "contexts": [
+   "VrcToVrmWindow.cs: clothing chip tip"
+  ]
+ },
+ {
   "key": "ux.chip.expressions",
   "en": "Number of expression animations found in FX controller '{0}'. Click to go to the Expressions tab.",
   "ko": "FX 컨트롤러 '{0}'에서 찾은 표정 애니메이션 수. 클릭하면 표정 탭으로 이동합니다.",
@@ -1631,6 +1771,56 @@
   "zh": "将 {0} 个 PhysBone (碰撞体 {1} 个) 转换为 VRM 动骨。点击跳转到动骨标签页。",
   "contexts": [
    "status chip tooltip"
+  ]
+ },
+ {
+  "key": "ux.clothing.default",
+  "en": "Default (as baked)",
+  "ko": "기본값(원본 그대로)",
+  "ja": "デフォルト（ベイク済み）",
+  "zh": "默认（保持原样）",
+  "contexts": [
+   "VrcToVrmWindow.cs: clothing"
+  ]
+ },
+ {
+  "key": "ux.clothing.empty",
+  "en": "No clothing variations were found in the FX layer. The avatar will export exactly as it is now.",
+  "ko": "FX 레이어에서 옷 변형이 발견되지 않았습니다. 현재 모습 그대로 내보냅니다.",
+  "ja": "FXレイヤーに衣装バリエーションが見つかりませんでした。現在の見た目そのまま出力します。",
+  "zh": "FX 层中未发现服装变化。将按当前外观导出。",
+  "contexts": [
+   "VrcToVrmWindow.cs: clothing"
+  ]
+ },
+ {
+  "key": "ux.clothing.help",
+  "en": "Pick one variant per group (or leave Default). The choice is baked into the VRM: toggles, material swaps and morphs are applied before export.",
+  "ko": "그룹마다 하나씩 선택하세요(또는 기본값). 토글/재질 교체/모프가 내보내기 전에 적용됩니다.",
+  "ja": "グループごとに1つ選んでください（またはデフォルト）。トグル/マテリアルスワップ/モーフが書き出し前に適用されます。",
+  "zh": "为每组选择一个（或保留默认）。开关、材质替换和变形将在导出前应用。",
+  "contexts": [
+   "VrcToVrmWindow.cs: clothing"
+  ]
+ },
+ {
+  "key": "ux.clothing.tip",
+  "en": "Tip: for full outfit combinations, export once per combination. Inactive outfits are still dropped (see Options), so un-checked outfits stay out of the file.",
+  "ko": "팁: 전체 조합이 필요하면 조합마다 한 번씩 내보내세요. 선택하지 않은 아웃핏은 Options의 설정대로 제외됩니다.",
+  "ja": "ヒント: 全体の組み合わせが必要な場合、組み合わせごとに一度ずつ書き出してください。選択していないアウトフィットはOptionsの設定通り除外されます。",
+  "zh": "提示：如需完整组合，请为每种组合导出一次。未选择的服装仍按选项设置排除。",
+  "contexts": [
+   "VrcToVrmWindow.cs: clothing"
+  ]
+ },
+ {
+  "key": "ux.clothing.variants",
+  "en": "{0} variants",
+  "ko": "{0}개 변형",
+  "ja": "{0}バリエーション",
+  "zh": "{0} 个变体",
+  "contexts": [
+   "VrcToVrmWindow.cs: clothing"
   ]
  },
  {

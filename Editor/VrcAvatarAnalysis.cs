@@ -77,6 +77,8 @@ namespace VrcToVrm
 
         public RuntimeAnimatorController Fx;
         public List<ExpressionCandidate> Candidates = new List<ExpressionCandidate>();
+        public List<ClothingClip> ClothingClips = new List<ClothingClip>();
+        public List<ClothingGroup> ClothingGroups = new List<ClothingGroup>();
         public List<string> Warnings = new List<string>();
         /// <summary>Informational messages (nothing for the user to fix).</summary>
         public List<string> Notes = new List<string>();
@@ -277,6 +279,30 @@ namespace VrcToVrm
                 .OrderByDescending(c => c.IsGesture)
                 .ThenBy(c => c.Name)
                 .ToList();
+            // clothing variants: every FX clip that toggles objects, swaps material properties or morphs a
+            // non-face mesh. Face candidates keep their existing meaning; a clip may be both.
+            var clipSources = new Dictionary<AnimationClip, List<string>>();
+            AddSources(scc, "", clipSources);
+            AddSources(fx?.gesture, "Gesture", clipSources);
+            AddSources(fx?.action, "Action", clipSources);
+            AddSources(fx?.sitting, "Sitting", clipSources);
+            var clothingList = new List<ClothingClip>();
+            foreach (var kv in byClip)
+            {
+                var clip = kv.Key;
+                var clothingCurves = ClothingVariants.ReadCurves(clip);
+                if (clothingCurves.Count == 0) continue;
+                bool onlyFace = clothingCurves.All(c => c.Kind == "BlendShape") && (faceRoots.Count == 0 || clothingCurves.All(c => faceRoots.Contains(c.RelativePath)));
+                if (onlyFace) continue;
+                var cc = new ClothingClip { Name = clip.name, Clip = clip, Curves = clothingCurves };
+                cc.Category = ClothingVariants.GuessCategory(clip.name, clothingCurves);
+                cc.Sources = clipSources.TryGetValue(clip, out var src2) ? src2 : new List<string>();
+                clothingList.Add(cc);
+            }
+            ClothingClips = clothingList.OrderBy(c => c.Name, System.StringComparer.OrdinalIgnoreCase).ToList();
+            ClothingGroups = ClothingVariants.GroupClips(ClothingClips);
+            if (ClothingClips.Count > 0) Notes.Add(L.Tr("analysis.016", ClothingClips.Count, ClothingGroups.Count));
+
         }
 
         /// <summary>

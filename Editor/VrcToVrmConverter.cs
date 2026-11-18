@@ -23,6 +23,14 @@ namespace VrcToVrm
         public bool UseSparseAccessor = true;
         public bool KeepWorkingCopy = false;
         public SpringConversionSettings Spring = new SpringConversionSettings();
+        /// <summary>Clothing variations to bake into the export: one clip per ClothingGroup key (null/absent = as-is).
+        /// See <see cref="ClothingVariants"/>.</summary>
+        public Dictionary<string, ClothingClip> ClothingChoices = new Dictionary<string, ClothingClip>();
+        /// <summary>Drop Poiyomi additive/multiplicative materials instead of approximating them with transparent MToon.</summary>
+        public bool DropAdditiveMaterials = false;
+        /// <summary>When a material family has no dedicated converter, approximate more Unity-standard
+        /// properties (cutoff, emission, bump) instead of a flat main-texture-only MToon.</summary>
+        public bool SmartFallback = true;
 
         // meta
         public string Title = "";
@@ -110,6 +118,13 @@ namespace VrcToVrm
             var vowels = a.Vowels.ToDictionary(kv => kv.Key, kv => Resolve(kv.Value));
             var viewWorld = copy.transform.TransformPoint(a.ViewPosition);
 
+            // 0. clothing variations: apply the chosen variant per group before anything else reads the copy
+            foreach (var kv in o.ClothingChoices)
+            {
+                if (kv.Value == null) continue;
+                ClothingVariants.Apply(copy, kv.Value, log);
+            }
+
             // 1. dynamics (needs VRC components, so before stripping)
             PhysBoneToSpringBone.Convert(copy, o.Spring, log);
 
@@ -121,12 +136,18 @@ namespace VrcToVrm
 
             // 4. materials
             TrimMaterialSlots(copy, log);
-            var conv = new LilToonToMToon(folder + "/Textures", o.BakeTextures, o.KeepMatCap);
+            var conv = new LilToonToMToon(folder + "/Textures", o.BakeTextures, o.KeepMatCap, o.SmartFallback);
             var saved = new Dictionary<Material, Material>();
+            var familyCounts = new Dictionary<string, int>();
             foreach (var r in copy.GetComponentsInChildren<Renderer>(true))
             {
                 var mats = r.sharedMaterials.Select(m =>
                 {
+                    if (o.DropAdditiveMaterials && m != null && PoiyomiToMToon.IsPoiyomi(m))
+                    {
+                        int mode = (int)(m.HasProperty("_Mode") ? m.GetFloat("_Mode") : 0);
+                        if (mode >= 4 && mode <= 7) return null; // additive / multiplicative have no MToon equivalent
+                    }
                     var dst = conv.Convert(m);
                     if (dst == null || EditorUtility.IsPersistent(dst)) return dst;
                     if (!saved.TryGetValue(dst, out var asset))
@@ -138,9 +159,15 @@ namespace VrcToVrm
                     return asset;
                 }).ToArray();
                 r.sharedMaterials = mats;
+                foreach (var m in r.sharedMaterials)
+                {
+                    var fam = LilToonToMToon.MaterialFamily(m);
+                    familyCounts[fam] = familyCounts.TryGetValue(fam, out int c) ? c + 1 : 1;
+                }
             }
             log.AddRange(conv.Log.Distinct());
             log.Add(L.Tr("conv.002", saved.Count));
+            log.Add(L.Tr("conv.016", string.Join(", ", familyCounts.OrderByDescending(kv => kv.Value).Select(kv => $"{kv.Key} x{kv.Value}"))));
 
             // 5. unique names (VRM exporter renames duplicates, which would break blendshape paths)
             MakeNamesUnique(copy, animator);

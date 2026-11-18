@@ -18,14 +18,27 @@ namespace VrcToVrm
         readonly string _textureFolder;
         readonly bool _bakeTextures;
         readonly bool _keepMatCap;
+        readonly bool _smartFallback;
         readonly Dictionary<Material, Material> _cache = new Dictionary<Material, Material>();
         public readonly List<string> Log = new List<string>();
 
-        public LilToonToMToon(string textureFolder, bool bakeTextures, bool keepMatCap = true)
+        public LilToonToMToon(string textureFolder, bool bakeTextures, bool keepMatCap = true, bool smartFallback = true)
         {
             _textureFolder = textureFolder;
             _bakeTextures = bakeTextures;
             _keepMatCap = keepMatCap;
+            _smartFallback = smartFallback;
+        }
+
+        /// <summary>Shader family used by the converter dispatch (for stats/logging). Never null.</summary>
+        public static string MaterialFamily(Material m)
+        {
+            if (m == null) return "null";
+            if (IsMToon(m)) return "MToon";
+            if (PoiyomiToMToon.IsPoiyomi(m)) return "Poiyomi";
+            if (IsLilToon(m)) return "lilToon";
+            if (IsFakeShadow(m)) return "FakeShadow";
+            return "Other";
         }
 
         public static bool IsLilToon(Material m) =>
@@ -43,6 +56,7 @@ namespace VrcToVrm
             Material dst;
             if (IsMToon(src)) dst = src;
             else if (IsFakeShadow(src)) dst = Invisible(src);
+            else if (PoiyomiToMToon.IsPoiyomi(src)) dst = FromPoiyomi(src);
             else if (IsLilToon(src)) dst = FromLilToon(src);
             else dst = FromUnknown(src);
             _cache[src] = dst;
@@ -81,6 +95,31 @@ namespace VrcToVrm
             var color = C(src, "_Color", Color.white);
             dst.SetTexture("_MainTex", main);
             dst.SetColor("_Color", color);
+            if (_smartFallback && (src.HasProperty("_Cutoff") || src.HasProperty("_Mode") || src.HasProperty("_BumpMap") || src.HasProperty("_EmissionColor")))
+            {
+                // Unity-Standard-style material: preserve alpha, bump and emission instead of a flat tint
+                bool cutout = src.HasProperty("_Mode") ? (int)src.GetFloat("_Mode") == 1 : false;
+                if (src.HasProperty("_Cutoff") && F(src, "_Cutoff") > 0 && F(src, "_Cutoff") < 1) cutout = cutout || src.HasProperty("transparentMode") == false;
+                if (src.HasProperty("_BumpMap") && T(src, "_BumpMap") != null)
+                {
+                    dst.SetFloat("_BumpScale", F(src, "_BumpScale", 1));
+                    dst.SetTexture("_BumpMap", T(src, "_BumpMap"));
+                    dst.EnableKeyword("_NORMALMAP");
+                }
+                if (src.HasProperty("_EmissionColor") && C(src, "_EmissionColor", Color.black).maxColorComponent > 0.004f)
+                {
+                    var em = C(src, "_EmissionColor", Color.white);
+                    if (src.HasProperty("_EmissionIntensity")) em *= F(src, "_EmissionIntensity", 1);
+                    dst.SetColor("_EmissionColor", em);
+                    dst.SetTexture("_EmissionMap", T(src, "_EmissionMap"));
+                }
+                if (cutout || color.a < 0.99f || (main != null && main.name.IndexOf("alpha", System.StringComparison.OrdinalIgnoreCase) >= 0))
+                {
+                    dst.SetFloat("_Cutoff", F(src, "_Cutoff", 0.5f));
+                    dst.SetFloat("_BlendMode", 1);
+                }
+                Log.Add(L.Tr("mat.013", src.name, src.shader.name));
+            }
             // MToon's default shade is a flat pink with no texture; keep the texture and only darken it a little
             // (VRChat's mobile toon shaders shade softly)
             dst.SetTexture("_ShadeTexture", main);
@@ -89,6 +128,180 @@ namespace VrcToVrm
             dst.SetFloat("_ShadeToony", 0.9f);
             dst.SetFloat("_LightColorAttenuation", 0);
             dst.SetFloat("_IndirectLightIntensity", 0);
+            MToon.Utils.ValidateProperties(dst, true);
+            Log.Add(L.Tr("mat.003", src.name, src.shader.name));
+            return dst;
+        }
+
+        Material FromPoiyomi(Material src)
+        {
+            var dst = NewMToon(src);
+            var main = T(src, "_MainTex");
+            var color = C(src, "_Color", Color.white);
+            dst.SetTexture("_MainTex", main);
+            dst.SetColor("_Color", color);
+            dst.SetTextureScale("_MainTex", T(src, "_MainTex") == null ? Vector2.one : src.GetTextureScale("_MainTex"));
+            dst.SetTextureOffset("_MainTex", src.GetTextureOffset("_MainTex"));
+            int mode = (int)F(src, "_Mode");
+            bool forceOpaque = F(src, "_AlphaForceOpaque") > 0.5f;
+            int blend = PoiyomiToMToon.BlendModeForMode(mode, forceOpaque, out bool isCutout, out bool isTransparent);
+            // bake UDIM discard / dissolve into alpha so the exported variant shows only its own outfit tiles
+            {
+                if ((PoiyomiToMToon.UdimGrid(src, out int udimRows, out int udimCols) || PoiyomiToMToon.DissolveAlpha(src) > 0f) && main != null)
+                {
+                    var tiles = PoiyomiToMToon.DiscardedTiles(src);
+                    float dissolve = PoiyomiToMToon.DissolveAlpha(src);
+                    if (tiles.Count > 0 || dissolve > 0f)
+                    {
+                        try
+                        {
+                            var mainRaw = LoadRaw(main);
+                            int w = mainRaw.width, h = mainRaw.height;
+                            var data = mainRaw.GetPixels32();
+                            if (tiles.Count > 0)
+                            {
+                                foreach (var t in tiles)
+                                {
+                                    var rc = t.Split(',');
+                                    int row = int.Parse(rc[0]), col = int.Parse(rc[1]);
+                                    int x0 = w * col / udimCols, x1 = w * (col + 1) / udimCols;
+                                    int yBottom = h * row / udimRows, yTop = h * (row + 1) / udimRows;
+                                    int y0 = Mathf.Max(0, h - yTop), y1 = Mathf.Min(h, h - yBottom);
+                                    for (int y = y0; y < y1; y++)
+                                        for (int x = x0; x < x1; x++)
+                                        {
+                                            int idx = y * w + x;
+                                            if (idx >= 0 && idx < data.Length) data[idx].a = 0;
+                                        }
+                                }
+                            }
+                            else
+                            {
+                                // dissolve only: uniform alpha scale
+                                float keep = 1f - Mathf.Clamp01(dissolve);
+                                for (int i = 0; i < data.Length; i++) data[i].a = (byte)Mathf.Clamp01(data[i].a / 255f * keep * 255f);
+                            }
+                            var outTex = new Texture2D(w, h, TextureFormat.RGBA32, false);
+                            outTex.SetPixels32(data);
+                            outTex.Apply();
+                            dst.SetTexture("_MainTex", SaveTexture(outTex, src.name + "_udim", main) ?? main);
+                            if (!isCutout && !isTransparent) { isCutout = true; blend = 1; }
+                            Log.Add(L.Tr("mat.014", src.name, tiles.Count, udimRows, udimCols, dissolve));
+                        }
+                        finally { FreeTemps(); }
+                    }
+                }
+            }
+            dst.SetFloat("_BlendMode", blend);
+            dst.SetFloat("_Cutoff", F(src, "_Cutoff", 0.5f));
+            dst.SetFloat("_Cutoff", isCutout ? Mathf.Clamp(F(src, "_Cutoff", 0.5f), 0.05f, 0.95f) : dst.GetFloat("_Cutoff"));
+            // shade: MToon has one shade; map Poiyomi's first shade color (or a softened copy of the base)
+            {
+                var shade = C(src, "_1st_ShadeColor", Color.white);
+                if (shade == Color.white && color != Color.white) shade = new Color(color.r, color.g, color.b, 1);
+                var tex = T(src, "_1st_ShadeMap");
+                dst.SetTexture("_ShadeTexture", tex != null ? tex : main);
+                dst.SetColor("_ShadeColor", new Color(shade.r * 0.85f, shade.g * 0.85f, shade.b * 0.85f, 1));
+                dst.SetFloat("_ShadeShift", 0);
+                dst.SetFloat("_ShadeToony", 0.9f);
+            }
+            // bump
+            if (T(src, "_BumpMap") != null)
+            {
+                dst.SetFloat("_BumpScale", F(src, "_BumpScale", 1));
+                dst.SetTexture("_BumpMap", T(src, "_BumpMap"));
+                dst.EnableKeyword("_NORMALMAP");
+            }
+            // emission: Poiyomi stacks up to 4 channels; MToon keeps the first (log the rest)
+            {
+                var emColor = C(src, "_EmissionColor", Color.black);
+                float strength = F(src, "_EmissionStrength");
+                if (emColor.maxColorComponent > 0.004f && strength > 0.001f)
+                {
+                    dst.SetColor("_EmissionColor", emColor * strength);
+                    var emTex = T(src, "_EmissionMap");
+                    var emMask = T(src, "_EmissionMask");
+                    if (_bakeTextures && (emTex != null || emMask != null))
+                    {
+                        try
+                        {
+                            var refTex = emTex != null ? emTex : emMask;
+                            var refRaw = LoadRaw(refTex);
+                            var rgb = emTex != null ? Temp(Readable(LoadRaw(emTex), refRaw.width, refRaw.height)).GetPixels32() : null;
+                            var maskpx = emMask != null ? Temp(Readable(LoadRaw(emMask), refRaw.width, refRaw.height)).GetPixels32() : null;
+                            bool maskSRGB2 = IsSRGB(emMask);
+                            var bakedEm = new Color32[refRaw.width * refRaw.height];
+                            for (int i = 0; i < bakedEm.Length; i++)
+                            {
+                                float m = maskpx != null ? Channel(maskpx[i].r, maskSRGB2) : 1f;
+                                Color c = rgb != null ? Color.Lerp(Color.black, (Color)rgb[i], 1) : Color.white;
+                                c = new Color(c.r, c.g, c.b, 1);
+                                bakedEm[i] = (Color32)new Color(c.r * m, c.g * m, c.b * m, 1);
+                            }
+                            var emOut = new Texture2D(refRaw.width, refRaw.height, TextureFormat.RGBA32, false);
+                            emOut.SetPixels32(bakedEm);
+                            emOut.Apply();
+                            dst.SetTexture("_EmissionMap", SaveTexture(emOut, src.name + "_emission", refTex, maxSizeOf: main as Texture2D, alpha: false) ?? emTex);
+                        }
+                        finally { FreeTemps(); }
+                    }
+                    else if (emTex != null) dst.SetTexture("_EmissionMap", emTex);
+                    dst.EnableKeyword("_EMISSION_MAP");
+                }
+                bool extra = F(src, "_EmissionStrength1") > 0.001f || F(src, "_EmissionStrength2") > 0.001f || F(src, "_EmissionStrength3") > 0.001f;
+                if (extra) Log.Add(L.Tr("mat.015", src.name));
+            }
+            // matcap: first non-zero channel as sphere-add (same coverage as lilToon)
+            {
+                var matcap = T(src, "_Matcap");
+                float mcI = F(src, "_MatcapIntensity");
+                if (matcap == null) { for (int ch = 0; ch < 5; ch++) { matcap = T(src, "_Matcap" + ch); if (matcap != null) break; } }
+                if (matcap != null && mcI > 0.001f && _keepMatCap)
+                {
+                    var mcColor = C(src, "_MatcapColor", Color.white);
+                    dst.SetColor("_SphereAdd", new Color(mcColor.r, mcColor.g, mcColor.b, mcI));
+                    dst.SetTexture("_SphereAddTex", matcap);
+                    dst.EnableKeyword("_SPHEREADD");
+                }
+            }
+            // rim (first rim only; Poiyomi has two rims + fresnel/aniso that MToon cannot express)
+            if (F(src, "_RimStrength") > 0.001f || F(src, "_RimBorder") > 0.001f)
+            {
+                dst.SetColor("_RimColor", C(src, "_RimColor", Color.white));
+                dst.SetFloat("_RimFresnelPower", F(src, "_RimFresnelPower", 5));
+                dst.SetFloat("_RimFresnelPowerInv", F(src, "_RimFresnelPowerInv", 5));
+                dst.SetFloat("_RimLightingMix", F(src, "_RimLightingMix", 1));
+                dst.EnableKeyword("_RIM");
+            }
+            // outline
+            if (src.HasProperty("_OutlineColor") && src.HasProperty("_OutlineWidth") && F(src, "_OutlineWidth") > 0.001f)
+            {
+                dst.SetColor("_OutlineColor", C(src, "_OutlineColor", Color.white));
+                dst.SetFloat("_OutlineWidth", F(src, "_OutlineWidth", 0.5f));
+                dst.EnableKeyword("_OUTLINE");
+            }
+            // alpha mask baked into main alpha when the source is cutout/transparent (Poiyomi _AlphaMask/R + _AlphaTexture)
+            if ((isCutout || isTransparent || color.a < 1f) && (T(src, "_AlphaMask") != null || T(src, "_AlphaTexture") != null))
+            {
+                var mainTex = dst.GetTexture("_MainTex") as Texture2D;
+                if (mainTex != null)
+                {
+                    try
+                    {
+                        var maskA = T(src, "_AlphaMask") != null ? T(src, "_AlphaMask") : T(src, "_AlphaTexture");
+                        var mainRaw2 = LoadRaw(mainTex);
+                        var baked = mainRaw2.GetPixels32();
+                        var rgba = Temp(Readable(LoadRaw(maskA), mainRaw2.width, mainRaw2.height)).GetPixels32();
+                        for (int i = 0; i < baked.Length && i < rgba.Length; i++) baked[i].a = rgba[i].r;
+                        var alphaOut = new Texture2D(mainRaw2.width, mainRaw2.height, TextureFormat.RGBA32, false);
+                        alphaOut.SetPixels32(baked);
+                        alphaOut.Apply();
+                        dst.SetTexture("_MainTex", SaveTexture(alphaOut, src.name + "_alpha", mainTex) ?? mainTex);
+                    }
+                    finally { FreeTemps(); }
+                }
+            }
+            if (mode >= 4 && mode <= 7) Log.Add(L.Tr("mat.016", src.name, PoiyomiToMToon.ModeName(mode)));
             MToon.Utils.ValidateProperties(dst, true);
             Log.Add(L.Tr("mat.003", src.name, src.shader.name));
             return dst;
@@ -199,7 +412,7 @@ namespace VrcToVrm
 
             if (F(src, "_UseMatCap") == 1 && F(src, "_MatCapBlendMode") != 3 && T(src, "_MatCapTex") != null && !_keepMatCap)
             {
-                Log.Add(L.Tr("mat.011", src.name));
+                Log.Add(L.Tr("mat.015", src.name));
             }
             else if (F(src, "_UseMatCap") == 1 && F(src, "_MatCapBlendMode") != 3 && T(src, "_MatCapTex") != null)
             {

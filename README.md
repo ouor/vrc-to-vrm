@@ -14,13 +14,13 @@ UI languages: English, 한국어, 日本語, 简体中文.
 
 | In VRChat | In the VRM |
 |---|---|
-| lilToon materials | MToon materials |
+| lilToon and Poiyomi materials (UDIM discard, dissolve, cutout/transparent, emission, matcap, rim) | MToon materials |
 | PhysBones and PhysBone colliders | Spring bones and sphere colliders (a capsule becomes a row of spheres) |
 | Viseme blendshapes, or lip sync driven by the FX layer | A / I / U / E / O |
 | Eyelid blendshapes, eye bones | Blink, Blink_L / Blink_R, LookUp / LookDown, bone look-at |
 | Hand-gesture and toggle animations in the FX layer | Joy / Angry / Sorrow / Fun (guessed from names; you can change them) and custom expressions |
 | View position | First-person offset |
-| Objects you've switched off, like a spare outfit | Left out, so the VRM looks like the avatar does right now |
+| Object toggles + material swaps from FX (pick one per group in the Clothing tab) | Baked into the export, so each VRM shows the outfit you chose |
 
 The material conversion uses the same parameter mapping as lilToon's own "Convert to MToon". Things MToon can't do on its own, like lilToon's 2nd/3rd texture layers, color adjustments, shadow masks and alpha masks, get baked into new textures.
 
@@ -33,6 +33,23 @@ Not converted:
 - Constraints, contacts, particles, and anything else VRM 0.x has no place for.
 
 VRM 0.x only for now, since that's what most apps open. 1.0 isn't supported yet.
+
+## Clothing variations
+
+Full body avatars often carry many outfits in one prefab: per-outfit objects
+(Lesi Hoodie/Top/Shorts toggles), shared meshes with Poiyomi UDIM discard tiles
+(Rosary), material-property swaps (decals, hue, cutoff) and non-face morphs
+(bangs, pigtails). All four are detected from the FX layer, grouped into
+mutually-exclusive choices, and the **Clothing** tab lets you pick one variant
+per group before converting. Convert once per combination for separate `.vrm`
+files. See [docs/CLOTHING.md](docs/CLOTHING.md).
+
+Headless agents without Unity can use the offline harness in `tools/`:
+
+```bash
+python3 -m tools.cli dryrun <pkg.unitypackage> --out /tmp/reports
+python3 -m pytest tests -q
+```
 
 ## Requirements
 
